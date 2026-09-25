@@ -1,0 +1,10 @@
+.vscode/settings.json
+.cache/
+/bin
+/build
+/project/bin
+/project/.godot
+/vcpkg_installed
+/compile_commands.json
+CMakeUserPresets.json
+
