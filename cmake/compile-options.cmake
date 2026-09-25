@@ -1,0 +1,26 @@
+target_compile_options(${PROJECT_NAME} PRIVATE
+				$<$<CXX_COMPILER_ID:MSVC>:
+								/EHsc
+								/utf-8
+								/Zc:preprocessor
+				>
+				$<$<NOT:$<CXX_COMPILER_ID:MSVC>>:
+								-Wno-unused-value
+								$<$<CXX_COMPILER_ID:GNU>:
+												-Wno-attributes
+												-Wno-attributes=rl::
+								>
+								$<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:AppleClang>>:
+												-Wno-ignored-attributes
+												-Wno-unknown-attributes
+								>
+								$<$<CONFIG:Debug>:
+												-g
+												-fno-omit-frame-pointer
+												-O0
+								>
+								$<$<CONFIG:Release>:
+												-O3
+								>
+				>
+)
