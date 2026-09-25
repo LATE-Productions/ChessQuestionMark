@@ -12,7 +12,11 @@ This project uses opencv and godot to build a chess AR game
 - CMake
 
 ## Building and Debuging
-To build the project for use in the Godot Engine editor, build as is to build the project in the editor you must also provide an optimised binary first.
+To build the GDExtension for use in the Godot editor run:
+```bash
+cmake --build build --config Debug
+```
+To build the project in the Godot Engine editor, you must also provide an optimised binary first.
 Before building in the editor run 
 ```bash
 cmake --build build --config Release -DGODOTCPP_TARGET=template_release
