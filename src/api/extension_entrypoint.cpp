@@ -6,13 +6,14 @@
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/godot.hpp>
 
-#include "test.hpp"
+#include "main.hpp"
 
+namespace late {
 void initialize_gdextension_types(godot::ModuleInitializationLevel level) {
   if (level != godot::MODULE_INITIALIZATION_LEVEL_SCENE) {
     return;
   }
-  GDREGISTER_CLASS(ExampleClass)
+  GDREGISTER_CLASS(Main)
 }
 
 void uninitialize_gdextension_types(godot::ModuleInitializationLevel level) {
@@ -36,3 +37,4 @@ gdextension_init(GDExtensionInterfaceGetProcAddress p_get_proc_address,
   return init_obj.init();
 }
 }
+}  // namespace late

@@ -1,3 +1,31 @@
-[gd_scene format=3 uid="uid://bh67irdtyvvab"]
+[gd_scene load_steps=3 format=3 uid="uid://bh67irdtyvvab"]
 
-[node name="Node2D" type="Node2D"]
+[sub_resource type="Environment" id="Environment_y32ns"]
+background_mode = 3
+
+[sub_resource type="SphereMesh" id="SphereMesh_y32ns"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="Main" type="Main" parent="."]
+
+[node name="VideoCanvasLayer" type="CanvasLayer" parent="Main"]
+layer = -1
+
+[node name="VideoDisplay" type="TextureRect" parent="Main/VideoCanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+stretch_mode = 6
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Main"]
+environment = SubResource("Environment_y32ns")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3.3584087)
+mesh = SubResource("SphereMesh_y32ns")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.55732495, 0, 0.8302945, -0.52040124, 0.7792067, 0.3493129, -0.64697105, -0.62676704, 0.43427134, 5.575678, 2.381495, -1.2785977)
