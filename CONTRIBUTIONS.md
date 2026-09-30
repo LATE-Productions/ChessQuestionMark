@@ -2,13 +2,14 @@
 
 | Individual assignment | Student | Component/Task | Files | PR/Commit | Testing |
 |-----------------------|---------|----------------|-------|-----------|---------|
-|
-|
-|
-|
-|
-|
-|
+| 1 |
+| 1 |
+| 1 |
+| 1 |
+| 2 |
+| 2 |
+| 2 |
+| 2 |
 
 # Individual assignment
 
