@@ -1,5 +1,5 @@
 # Chess AR
-This project uses OpenCV and Godot to build a chess AR game
+This project uses OpenCV and Godot to build a chess AR game.
 Users will be able to play chess with an augmented chess board and chess pieces.
 To play the game, users will move/rotate markers that augment chess pieces within the game engine.
 
@@ -47,3 +47,26 @@ This template omits debug code and macros used by the editor to allow us to edit
 - --config Release
     - removes regular llvm or gdb debug symbols to optimise the code
 
+## Resource requirements
+
+- Resources
+
+    - Devices
+        - Any mobile device with (x86_64)
+        - Any computer with OS Linux (x86_64) or Windows (x86_64)
+        - Executable exe file for Chess AR
+    
+    - Camera
+        - Any mobile device with camera
+        - Or USB camera
+     
+    - Calibration
+        - Base camera/video capture device size.
+     
+    - Marker
+        - One marker for chess board
+        - Atleast two markers, one for each user
+        - Recommended, all markers for chess board and chess pieces
+
+    - Play area
+        - Flat surface (50*60cm)
