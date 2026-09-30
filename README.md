@@ -1,15 +1,29 @@
 # Chess AR
-This project uses opencv and godot to build a chess AR game
+This project uses OpenCV and Godot to build a chess AR game
+Users will be able to play chess with an augmented chess board and chess pieces.
+To play the game, users will move/rotate markers that augment chess pieces within the game engine.
+
 
 ## Requirements
+- OS
+    - Windows x86_64 and arm64
+    - Linux x86_64 and arm64
+    - Android x86_64
+ 
+- Compiler
+    - GCC
+    - Clang
+    - MSVC
+
 - Godot Engine 4.5
     - Only to build the godot project, the GDExtension can be built without the engine 
     - Recomend a godot launcher or version manager
         - (Launcher) https://github.com/ismailivanov/godot-hub
         - (Launcher) https://godotlauncher.org/
         - (Version Manager) https://gdvm.io/
-- vcpkg
-- CMake
+- vcpkg minimum version (latest)
+    - OpenCV (latest)
+- CMake minimum version (3.20)
 
 ## Building and Debuging
 To build the GDExtension for use in the Godot editor run:
