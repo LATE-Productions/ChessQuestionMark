@@ -1,4 +1,14 @@
-# CONTRIBUTIONS
+## CONTRIBUTIONS
+
+| Individual assignment | Student | Component/Task | Files | PR/Commit | Testing |
+|-----------------------|---------|----------------|-------|-----------|---------|
+|
+|
+|
+|
+|
+|
+|
 
 # Individual assignment
 
