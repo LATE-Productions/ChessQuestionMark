@@ -8,7 +8,7 @@ To play the game, users will move/rotate markers that augment chess pieces withi
 - OS
     - Windows x86_64 and arm64
     - Linux x86_64 and arm64
-    - Android x86_64
+    - Android x86_64 and arm64
  
 - Compiler
     - GCC
@@ -52,13 +52,13 @@ This template omits debug code and macros used by the editor to allow us to edit
 - Resources
 
     - Devices
-        - Any mobile device with (x86_64)
-        - Any computer with OS Linux (x86_64) or Windows (x86_64)
+        - Any mobile device with (x86_64 or arm64)
+        - Any computer with OS Linux (x86_64 or arm64) or Windows (x86_64 or arm64)
         - Executable exe file for Chess AR
     
     - Camera
         - Any mobile device with camera
-        - Or USB camera
+        - USB camera
      
     - Calibration
         - Base camera/video capture device size.
