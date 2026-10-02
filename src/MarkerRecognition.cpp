@@ -3,8 +3,9 @@
 #include "MarkerRecognition.hpp"
 
 namespace late {
-void MarkerRecognition::recognizeMarker(int markerId) {
+std::optional<std::pair<PieceType, PieceColor>> MarkerRecognition::recognizeMarker(int markerId) {
     auto it = markerDictionary.find(markerId);
+
     if (it != markerDictionary.end()) {
         return it->second;
     } else {
