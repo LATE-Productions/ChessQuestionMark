@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include "MarkerRecognition.hpp"
 
+namespace late {
 void MarkerRecognition::recognizeMarker(int markerId) {
     auto it = markerDictionary.find(markerId);
     if (it != markerDictionary.end()) {
@@ -27,4 +28,5 @@ void MarkerRecognition::initializeMarkerDictionary() {
         {11, {PieceType::Queen, PieceColor::Black}},
         {12, {PieceType::King, PieceColor::Black}}
     };
+}
 }
