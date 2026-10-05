@@ -8,6 +8,7 @@
 #include <godot_cpp/core/memory.hpp>
 #include <memory>
 #include <opencv2/opencv.hpp>
+#include "ImageRenderer.hpp"
 
 namespace late {
 class Main : public godot::Node {
@@ -17,7 +18,8 @@ class Main : public godot::Node {
   Main()
       : m_canvas_layer{nullptr},
         m_image_display{nullptr},
-        m_video_capture{nullptr} {}
+        m_video_capture{nullptr},
+        m_image_renderer(std::make_unique<ImageRenderer>()) {}
   ~Main() = default;
 
   auto _ready() -> void override;
@@ -31,5 +33,6 @@ class Main : public godot::Node {
   godot::TextureRect* m_image_display = nullptr;
 
   std::unique_ptr<cv::VideoCapture> m_video_capture;
+  std::unique_ptr<ImageRenderer> m_image_renderer;
 };
 }  // namespace late

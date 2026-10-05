@@ -7,9 +7,9 @@
 namespace late {
     class ImageRenderer {
         public: 
-            auto getBlackWhiteImage(cv::Mat frame) -> cv::Mat;
+            auto getBlackWhiteImage(cv::Mat& frame) -> cv::Mat;
 
         private:
-            auto deNoise(cv::Mat frame) -> cv::Mat;
+            auto deNoise(cv::Mat& frame) -> cv::Mat;
     };
 }
