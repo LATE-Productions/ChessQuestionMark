@@ -2,8 +2,10 @@
 #include <unordered_map>
 #include "MarkerRecognition.hpp"
 
-void MarkerRecognition::recognizeMarker(int markerId) {
+namespace late {
+std::optional<std::pair<PieceType, PieceColor>> MarkerRecognition::recognizeMarker(int markerId) {
     auto it = markerDictionary.find(markerId);
+
     if (it != markerDictionary.end()) {
         return it->second;
     } else {
@@ -27,4 +29,5 @@ void MarkerRecognition::initializeMarkerDictionary() {
         {11, {PieceType::Queen, PieceColor::Black}},
         {12, {PieceType::King, PieceColor::Black}}
     };
+}
 }

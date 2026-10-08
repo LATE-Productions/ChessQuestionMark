@@ -62,10 +62,11 @@ auto Main::_process(double delta_time) -> void {
   if (m_video_capture == nullptr) return;
   if (!m_video_capture->isOpened()) return;
 
-  cv::Mat frame;
+  cv::Mat frame_input;
 
-  if (m_video_capture->read(frame)) {
+  if (m_video_capture->read(frame_input)) {
     cv::Mat rgb_frame;
+    cv::Mat frame = m_image_renderer->getBlackWhiteImage(frame_input);
     cv::cvtColor(frame, rgb_frame, cv::COLOR_BGR2RGB);
 
     size_t image_size = rgb_frame.total() * rgb_frame.elemSize();

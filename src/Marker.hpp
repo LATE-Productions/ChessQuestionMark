@@ -1,12 +1,7 @@
 #include <opencv2/core.hpp>
 
-namespace Late {
-    struct Marker {
-        PieceType type;
-        PieceColor color;
-        cv::Point3f position;
-    };
-
+namespace late {
+    
     enum class PieceType {
         Board,
         Pawn,
@@ -20,5 +15,11 @@ namespace Late {
     enum class PieceColor {
         White,
         Black
+    };
+
+    struct Marker {
+        PieceType type;
+        PieceColor color;
+        cv::Point3f position;
     };
 }

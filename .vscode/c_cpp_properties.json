@@ -3,7 +3,9 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**, \"M:/AR Project/ChessQuestionMark/**\""
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/build/vcpkg_installed/x64-windows/include"
             ],
             "defines": [
                 "_DEBUG",

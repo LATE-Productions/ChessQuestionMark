@@ -2,7 +2,7 @@
 #include <unordered_map>
 #include "Marker.hpp"
 
-namespace Late {
+namespace late {
     class MarkerRecognition {
     public:
         std::optional<std::pair<PieceType, PieceColor>> recognizeMarker(int markerId);
