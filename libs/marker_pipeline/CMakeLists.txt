@@ -26,6 +26,7 @@ project(MarkerPipeline
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 find_package(OpenCV REQUIRED)
 
@@ -38,7 +39,7 @@ file(GLOB_RECURSE source_files
 add_library(${PROJECT_NAME} STATIC ${source_files})
 
 if(UNIX AND NOT APPLE)
-	target_link_options(ChessQuestionMark PRIVATE -Wl,-Bsymbolic)
+	target_link_options(${PROJECT_NAME} PUBLIC -Wl,-Bsymbolic)
 endif()
 
 target_include_directories(${PROJECT_NAME}
