@@ -30,5 +30,6 @@ namespace late {
             std::array<cv::Point2f, 4> m_corners;
             cv::Rect m_bounding_box;
             cv::Mat markerImage;
+            std::vector<std::vector<cv::Point>> m_contours;
     };
 }

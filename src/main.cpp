@@ -62,11 +62,18 @@ auto Main::_process(double delta_time) -> void {
   if (m_video_capture == nullptr) return;
   if (!m_video_capture->isOpened()) return;
 
-  cv::Mat frame;
+  cv::Mat frame_input;
 
-  if (m_video_capture->read(frame)) {
+  if (m_video_capture->read(frame_input)) {
     cv::Mat rgb_frame;
-    cv::cvtColor(frame, rgb_frame, cv::COLOR_BGR2RGB);
+    cv::Mat frame = m_image_renderer->getBlackWhiteImage(frame_input);
+    
+    std::vector<Marker> candidate_markers = m_marker_detection->detect_candidate_markers(frame);
+    cv::Mat debug_frame = m_marker_detection->draw_markers(frame, candidate_markers);
+    
+    cv::cvtColor(debug_frame, rgb_frame, cv::COLOR_BGR2RGB);
+
+    //cv::cvtColor(frame_input, rgb_frame, cv::COLOR_BGR2RGB);
 
     size_t image_size = rgb_frame.total() * rgb_frame.elemSize();
     PackedByteArray bytes;
