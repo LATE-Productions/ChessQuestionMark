@@ -1,5 +1,6 @@
 #pragma once
 
+#include <RingBuffer.hpp>
 #include <atomic>
 #include <godot_cpp/classes/node.hpp>
 #include <godot_cpp/classes/ref.hpp>
@@ -11,7 +12,6 @@
 #include <opencv2/core/mat.hpp>
 #include <thread>
 
-#include "pipelines/RingBuffer.hpp"
 #include "singletons/VideoSource.hpp"
 namespace late {
 
