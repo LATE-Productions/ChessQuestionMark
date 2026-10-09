@@ -14,8 +14,9 @@ namespace late {
 
         private:
 
-            auto detect_corners(cv::Mat& frame) -> std::array<cv::Point2f, 4>;
-            auto detect_rect(cv::Mat& frame) -> cv::Rect;
+            auto detect_corners(const std::vector<cv::Point>& contour) -> std::array<cv::Point2f, 4>;
+            auto order_corners(const std::array<cv::Point2f, 4>& corners) -> std::array<cv::Point2f, 4>;
+            auto detect_rect(const std::vector<cv::Point>& contour) -> cv::Rect;
 
     };
 

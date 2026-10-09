@@ -27,8 +27,8 @@ namespace late {
 
         public:
 
-            std::vector<cv::Point2f> m_corners;
+            std::array<cv::Point2f, 4> m_corners;
             cv::Rect m_bounding_box;
             cv::Mat markerImage;
-    }
+    };
 }
