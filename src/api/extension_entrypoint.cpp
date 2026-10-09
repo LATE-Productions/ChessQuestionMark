@@ -21,11 +21,14 @@ void initialize_gdextension_types(godot::ModuleInitializationLevel level) {
   GDREGISTER_CLASS(VideoSource);
   GDREGISTER_CLASS(FrameSource);
 
-  if (godot::Engine::get_singleton()->is_editor_hint()) {
+#if 0
+	
+0  if (godot::Engine::get_singleton()->is_editor_hint()) {
     return;
   }
   godot::Engine::get_singleton()->register_singleton("VideoSource",
                                                      memnew(VideoSource));
+#endif
 }
 
 void uninitialize_gdextension_types(godot::ModuleInitializationLevel level) {
@@ -33,6 +36,7 @@ void uninitialize_gdextension_types(godot::ModuleInitializationLevel level) {
     return;
   }
 
+#if 0
   if (godot::Engine::get_singleton()->is_editor_hint()) {
     return;
   }
@@ -41,6 +45,7 @@ void uninitialize_gdextension_types(godot::ModuleInitializationLevel level) {
 
   godot::Engine::get_singleton()->unregister_singleton("VideoSource");
   if (singleton) memdelete(singleton);
+#endif
 }
 
 extern "C" {
