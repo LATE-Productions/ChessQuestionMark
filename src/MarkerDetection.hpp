@@ -9,6 +9,7 @@ namespace late {
         public:
         
             auto detect_candidate_markers(cv::Mat& frame) -> std::vector<Marker>;
+            auto draw_markers(const cv::Mat& frame, const std::vector<Marker> markers) -> cv::Mat;
 
         protected:
 

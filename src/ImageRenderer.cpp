@@ -4,7 +4,7 @@
 
 namespace late {
 
-    auto ImageRenderer::getBlackWhiteImage(cv::Mat& frame) -> cv::Mat {
+    auto ImageRenderer::getBlackWhiteImage(cv::Mat frame) -> cv::Mat {
         frame = deNoise(frame); 
         
         cv::cvtColor(frame, frame, cv::COLOR_BGR2GRAY);
