@@ -1,4 +1,5 @@
 #include "MarkerDetection.hpp"
+#include <print>
 
 namespace late {
 
@@ -40,6 +41,11 @@ namespace late {
             marker.m_bounding_box = detect_rect(approx);
 
             markers.push_back(marker); // May use embarkpush_back(std::move(marker)) for efficiency
+
+            std::cout << "Detected marker with corners: ";
+            for (const auto& corner : marker.m_corners) {
+                std::println("{}, {}", corner.x, corner.y);
+            }
         }
         return markers;
     }
