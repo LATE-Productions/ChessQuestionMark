@@ -16,11 +16,11 @@ file(GLOB_RECURSE source_files
 
 add_library(${PROJECT_NAME} SHARED ${source_files})
 
-find_package(OpenCV REQUIRED)
-
 include(cmake/godot-dev-configuration.cmake)
 include(cmake/gdextension.cmake)
 include(cmake/compile-options.cmake)
+
+add_subdirectory(libs/marker_pipeline)
 
 target_include_directories(ChessQuestionMark
 	PRIVATE
@@ -32,6 +32,7 @@ target_link_libraries(ChessQuestionMark
 		godot::cpp
 	PRIVATE
 		${OpenCV_LIBS}
+		MarkerPipeline
 	)
 
 gdextension(${PROJECT_NAME})
