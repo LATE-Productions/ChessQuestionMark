@@ -1,3 +1,5 @@
+#include <ImageRenderer.hpp>
+#include <MarkerDetection.hpp>
 #include <godot_cpp/classes/canvas_layer.hpp>
 #include <godot_cpp/classes/image_texture.hpp>
 #include <godot_cpp/classes/node.hpp>
@@ -8,8 +10,6 @@
 #include <godot_cpp/core/memory.hpp>
 #include <memory>
 #include <opencv2/opencv.hpp>
-#include "ImageRenderer.hpp"
-#include "MarkerDetection.hpp"
 
 namespace late {
 class Main : public godot::Node {

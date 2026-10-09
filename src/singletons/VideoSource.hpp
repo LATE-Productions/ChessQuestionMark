@@ -1,11 +1,10 @@
 #pragma once
+#include <CameraCapture.hpp>
+#include <RingBuffer.hpp>
 #include <godot_cpp/classes/object.hpp>
 #include <godot_cpp/classes/wrapped.hpp>
 #include <memory>
 #include <opencv2/core/mat.hpp>
-
-#include "pipelines/CameraCapture.hpp"
-#include "pipelines/RingBuffer.hpp"
 
 namespace late {
 class VideoSource : public godot::Object {
