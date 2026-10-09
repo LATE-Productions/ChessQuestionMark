@@ -2,24 +2,50 @@
 
 #include <gdextension_interface.h>
 
+#include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/core/defs.hpp>
+#include <godot_cpp/core/memory.hpp>
 #include <godot_cpp/godot.hpp>
 
 #include "main.hpp"
+#include "nodes/FrameSource.hpp"
+#include "singletons/VideoSource.hpp"
 
 namespace late {
 void initialize_gdextension_types(godot::ModuleInitializationLevel level) {
   if (level != godot::MODULE_INITIALIZATION_LEVEL_SCENE) {
     return;
   }
-  GDREGISTER_CLASS(Main)
+  GDREGISTER_CLASS(Main);
+  GDREGISTER_CLASS(VideoSource);
+  GDREGISTER_CLASS(FrameSource);
+
+#if 0
+	
+0  if (godot::Engine::get_singleton()->is_editor_hint()) {
+    return;
+  }
+  godot::Engine::get_singleton()->register_singleton("VideoSource",
+                                                     memnew(VideoSource));
+#endif
 }
 
 void uninitialize_gdextension_types(godot::ModuleInitializationLevel level) {
   if (level != godot::MODULE_INITIALIZATION_LEVEL_SCENE) {
     return;
   }
+
+#if 0
+  if (godot::Engine::get_singleton()->is_editor_hint()) {
+    return;
+  }
+  godot::Object* singleton =
+      godot::Engine::get_singleton()->get_singleton("VideoSource");
+
+  godot::Engine::get_singleton()->unregister_singleton("VideoSource");
+  if (singleton) memdelete(singleton);
+#endif
 }
 
 extern "C" {
