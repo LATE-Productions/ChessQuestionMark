@@ -12,7 +12,7 @@
 #include "nodes/FrameSource.hpp"
 #include "singletons/VideoSource.hpp"
 
-namespace late {
+namespace chess {
 void initialize_gdextension_types(godot::ModuleInitializationLevel level) {
   if (level != godot::MODULE_INITIALIZATION_LEVEL_SCENE) {
     return;
@@ -63,4 +63,4 @@ gdextension_init(GDExtensionInterfaceGetProcAddress p_get_proc_address,
   return init_obj.init();
 }
 }
-}  // namespace late
+}  // namespace chess

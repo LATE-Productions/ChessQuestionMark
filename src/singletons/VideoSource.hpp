@@ -6,7 +6,9 @@
 #include <memory>
 #include <opencv2/core/mat.hpp>
 
-namespace late {
+namespace chess {
+using late::CameraCapture;
+using late::IBuffer;
 class VideoSource : public godot::Object {
   GDCLASS(VideoSource, godot::Object)
  public:
@@ -18,4 +20,4 @@ class VideoSource : public godot::Object {
  private:
   CameraCapture m_capture{};
 };
-}  // namespace late
+}  // namespace chess

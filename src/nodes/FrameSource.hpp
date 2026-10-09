@@ -13,7 +13,9 @@
 #include <thread>
 
 #include "singletons/VideoSource.hpp"
-namespace late {
+namespace chess {
+using late::OverflowPolicy;
+using late::RingBuffer;
 
 using VideoOutputBuffer = RingBuffer<cv::Mat, 4, OverflowPolicy::DROP>;
 
@@ -40,4 +42,4 @@ class FrameSource : public godot::TextureRect {
 
   godot::TypedArray<godot::NodePath> m_textureRects;
 };
-}  // namespace late
+}  // namespace chess

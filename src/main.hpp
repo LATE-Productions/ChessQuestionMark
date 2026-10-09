@@ -11,7 +11,10 @@
 #include <memory>
 #include <opencv2/opencv.hpp>
 
-namespace late {
+namespace chess {
+using late::ImageRenderer;
+using late::MarkerDetection;
+
 class Main : public godot::Node {
   GDCLASS(Main, godot::Node);
 
@@ -38,4 +41,4 @@ class Main : public godot::Node {
   std::unique_ptr<ImageRenderer> m_image_renderer;
   std::unique_ptr<MarkerDetection> m_marker_detection;
 };
-}  // namespace late
+}  // namespace chess

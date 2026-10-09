@@ -1,6 +1,6 @@
 #pragma once
 
-namespace late {
+namespace chess {
 void initialize_gdextension_types();
 void uninitialize_gdextension_types();
-}  // namespace late
+}  // namespace chess

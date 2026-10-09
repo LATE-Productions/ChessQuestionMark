@@ -16,7 +16,7 @@
 #include <opencv2/imgproc.hpp>
 #include <thread>
 
-namespace late {
+namespace chess {
 using godot::Image;
 using godot::ImageTexture;
 using godot::PackedByteArray;
@@ -72,4 +72,4 @@ auto FrameSource::defered_create_texture(godot::PackedByteArray bytes,
   set_texture(texture);
 }
 
-}  // namespace late
+}  // namespace chess

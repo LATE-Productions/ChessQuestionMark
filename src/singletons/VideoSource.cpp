@@ -2,10 +2,10 @@
 
 #include <godot_cpp/core/class_db.hpp>
 
-namespace late {
+namespace chess {
 auto VideoSource::_bind_methods() -> void {}
 auto VideoSource::attach_output(std::shared_ptr<IBuffer<cv::Mat>> output)
     -> void {
   m_capture.attach_output(output);  // blocking
 }
-}  // namespace late
+}  // namespace chess

@@ -16,11 +16,15 @@
 #include <opencv2/imgproc.hpp>
 #include <string>
 
-namespace late {
+#include "MarkerDetection.hpp"
+
+namespace chess {
 using godot::Image;
 using godot::ImageTexture;
 using godot::PackedByteArray;
 using godot::Ref;
+
+using late::Marker;
 
 auto Main::_ready() -> void {
   std::string video_canvas_name = "VideoCanvasLayer";
@@ -67,13 +71,15 @@ auto Main::_process(double delta_time) -> void {
   if (m_video_capture->read(frame_input)) {
     cv::Mat rgb_frame;
     cv::Mat frame = m_image_renderer->getBlackWhiteImage(frame_input);
-    
-    std::vector<Marker> candidate_markers = m_marker_detection->detect_candidate_markers(frame);
-    cv::Mat debug_frame = m_marker_detection->draw_markers(frame, candidate_markers);
-    
+
+    std::vector<Marker> candidate_markers =
+        m_marker_detection->detect_candidate_markers(frame);
+    cv::Mat debug_frame =
+        m_marker_detection->draw_markers(frame, candidate_markers);
+
     cv::cvtColor(debug_frame, rgb_frame, cv::COLOR_BGR2RGB);
 
-    //cv::cvtColor(frame_input, rgb_frame, cv::COLOR_BGR2RGB);
+    // cv::cvtColor(frame_input, rgb_frame, cv::COLOR_BGR2RGB);
 
     size_t image_size = rgb_frame.total() * rgb_frame.elemSize();
     PackedByteArray bytes;
@@ -87,4 +93,4 @@ auto Main::_process(double delta_time) -> void {
     m_image_display->set_texture(texture);
   }
 }
-}  // namespace late
+}  // namespace chess
