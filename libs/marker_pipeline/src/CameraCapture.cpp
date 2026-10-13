@@ -8,15 +8,14 @@ CameraCapture::CameraCapture()
       m_outputs{},
       m_mutex{},
       m_running{true} {
-  m_captureThread = std::thread([&isRun = m_running, &mutex = m_mutex,
-                                 &feed = m_captureFeed, &out = m_outputs]() {
-    while (isRun && feed->isOpened()) {
+  m_captureThread = std::thread([&]() {
+    while (m_running && m_captureFeed->isOpened()) {
       cv::Mat frame;
 
-      if (feed->read(frame)) {
-        std::lock_guard lock{mutex};
+      if (m_captureFeed->read(frame)) {
+        std::lock_guard lock{m_mutex};
 
-        for (auto& output : out) output->write(frame.clone());
+        for (auto& output : m_outputs) output->write(frame.clone());
       }
     }
   });

@@ -12,10 +12,10 @@ class CameraCapture {
   CameraCapture();
   ~CameraCapture();
 
-  CameraCapture(const CameraCapture&) = delete;
+  CameraCapture(const CameraCapture&)            = delete;
   CameraCapture& operator=(const CameraCapture&) = delete;
-  CameraCapture(CameraCapture&&) = delete;
-  CameraCapture& operator=(CameraCapture&&) = delete;
+  CameraCapture(CameraCapture&&)                 = delete;
+  CameraCapture& operator=(CameraCapture&&)      = delete;
 
   auto attach_output(std::shared_ptr<IBuffer<cv::Mat>> output) -> void;
 
