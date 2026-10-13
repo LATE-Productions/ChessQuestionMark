@@ -31,6 +31,11 @@ target_include_directories(ChessQuestionMark
 		${OpenCV_INCLUDE_DIRS}
 		${CMAKE_CURRENT_SOURCE_DIR}/src
 )
+
+if(UNIX AND NOT APPLE)
+	target_link_options(${PROJECT_NAME} PUBLIC -Wl,-Bsymbolic)
+endif()
+
 target_link_libraries(ChessQuestionMark
 	PUBLIC
 		godot::cpp

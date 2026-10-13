@@ -32,24 +32,23 @@ find_package(OpenCV REQUIRED)
 
 file(GLOB_RECURSE source_files
 	CONFIGURE_DEPENDS
-		"${CMAKE_CURRENT_SOURCE_DIR}/src/*.[hc]pp"
+		"${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
 )
 
-
-add_library(${PROJECT_NAME} STATIC ${source_files})
-
-if(UNIX AND NOT APPLE)
-	target_link_options(${PROJECT_NAME} PUBLIC -Wl,-Bsymbolic)
-endif()
-
+add_library(${PROJECT_NAME} STATIC )
 target_include_directories(${PROJECT_NAME}
 	PUBLIC
 		${OpenCV_INCLUDE_DIRS}
-		${CMAKE_CURRENT_SOURCE_DIR}/src
+		${CMAKE_CURRENT_SOURCE_DIR}/include
 )
+target_sources(${PROJECT_NAME} PRIVATE ${source_files})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${OpenCV_LIBS})
 
-add_executable(marker_pipeline main.cpp)
+add_executable(marker_pipeline)
+target_sources(marker_pipeline
+	PRIVATE
+		main.cpp
+)
 target_link_libraries(marker_pipeline PRIVATE ${PROJECT_NAME})
 
 
