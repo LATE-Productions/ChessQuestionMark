@@ -1,20 +1,65 @@
+#include <atomic>
 #include <iostream>
+#include <memory>
 #include <opencv2/opencv.hpp>
+#include <stop_token>
+#include <thread>
+
+#include "CameraCapture.hpp"
+#include "ImageRenderer.hpp"
+#include "Marker.hpp"
+#include "MarkerDetection.hpp"
+#include "RingBuffer.hpp"
+
 int main() {
-  // Open the supplied video file.
-  cv::VideoCapture video(0);
-  if (!video.isOpened()) {
-    std::cerr << "Could not open the video.\n";
-    return 1;
-  }
-  cv::Mat frame;
+  using late::CameraCapture;
+  using late::ImageRenderer;
+  using late::Marker;
+  using late::MarkerDetection;
+  using late::OverflowPolicy;
+  using late::RingBuffer;
+  CameraCapture cameraCapture{};
+
+  cv::Mat shared_frame;
+
+  auto buffer =
+      std::make_shared<RingBuffer<cv::Mat, 3, OverflowPolicy::DROP>>();
+  cameraCapture.attach_output(buffer);
+  ImageRenderer renderer{};
+  MarkerDetection marker_detection{};
+
   // Read and display one frame at a time.
-  while (video.read(frame)) {
-    cv::imshow("OpenCV video test", frame);
-    // Wait briefly; Escape closes the program.
-    if (cv::waitKey(20) == 27) {
+  int keyPressed = '1';
+  while (true) {
+    int key = cv::waitKey(5);
+    if (key == '1')
+      keyPressed = key;
+    else if (key == '2')
+      keyPressed = key;
+    else if (key == '3')
+      keyPressed = key;
+    else if (key == 27)
       break;
+    std::optional<cv::Mat> frame = buffer->read();
+    if (frame) {
+      shared_frame = frame.value();
+      if (keyPressed == '1') cv::imshow("Pipeline", shared_frame);
+
+      renderer.getBlackWhiteImage(shared_frame);
+
+      if (keyPressed == '2')
+        cv::imshow("Pipeline", shared_frame);  // Use for debug
+
+      std::vector<Marker> candidate_markers =
+          marker_detection.detect_candidate_markers(shared_frame);
+
+      cv::Mat debug_frame =
+          marker_detection.draw_markers(shared_frame, candidate_markers);
+
+      if (keyPressed == '3')
+        cv::imshow("Pipeline", debug_frame);  // Use for debug
     }
   }
+
   return 0;
 }

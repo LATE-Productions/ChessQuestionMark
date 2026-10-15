@@ -5,19 +5,17 @@
 
 namespace late {
 
-auto ImageRenderer::getBlackWhiteImage(cv::Mat frame) -> cv::Mat {
-  frame = deNoise(frame);
+auto ImageRenderer::getBlackWhiteImage(cv::Mat& frame) -> void {
+  this->deNoise(frame);
 
   cv::cvtColor(frame, frame, cv::COLOR_BGR2GRAY);
 
   cv::threshold(
       frame, frame, 175, 255, cv::THRESH_BINARY
   );  // Threshoold may need to be changed for better resaults
-
-  return frame;
 };
 
-auto ImageRenderer::deNoise(cv::Mat& frame) -> cv::Mat {
+auto ImageRenderer::deNoise(cv::Mat& frame) -> void {
   cv::Mat kernel = cv::getStructuringElement(
       cv::MORPH_ELLIPSE,
       cv::Size(3, 3)  // Numbers may need to be tweaked for better resaults
@@ -29,7 +27,5 @@ auto ImageRenderer::deNoise(cv::Mat& frame) -> cv::Mat {
   cv::morphologyEx(
       frame, frame, cv::MORPH_CLOSE, kernel
   );  // Closing removes black pixles in a group of white pixels
-
-  return frame;
 };
 }  // namespace late

@@ -16,10 +16,10 @@ auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
   std::vector<std::vector<cv::Point>> contours;
 
   cv::findContours(frame, contours, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
-  cv::drawContours(frame, contours, 0, cv::Scalar(0, 0, 255), 2);
+  //cv::drawContours(frame, contours, 0, cv::Scalar(0, 0, 255), 2);
 
   for (const auto& contour : contours) {
-    if (cv::contourArea(contour) < 5000) {
+    if (cv::contourArea(contour) < 10000) {
       continue;  // Skipping small contours
     }
 
@@ -47,10 +47,10 @@ auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
         marker
     );  // May use embarkpush_back(std::move(marker)) for efficiency
 
-    std::println("Detected marker with corners: ");
-    for (const auto& corner : marker.m_corners) {
-      std::println("Corner: {}, {}", corner.x, corner.y);
-    }
+    //std::println("Detected marker with corners: ");
+    //for (const auto& corner : marker.m_corners) {
+    //  std::println("Corner: {}, {}", corner.x, corner.y);
+    //}
   }
   return markers;
 }

@@ -44,7 +44,8 @@ auto Main::_ready() -> void {
     m_image_display->set_name(video_display_name.c_str());
     m_image_display->set_anchors_preset(godot::Control::PRESET_FULL_RECT);
     m_image_display->set_stretch_mode(
-        godot::TextureRect::STRETCH_KEEP_ASPECT_COVERED);
+        godot::TextureRect::STRETCH_KEEP_ASPECT_COVERED
+    );
     m_canvas_layer->add_child(m_image_display);
   } else {
     m_image_display = get_node<godot::TextureRect>(video_display_name.c_str());
@@ -67,8 +68,9 @@ auto Main::_process(double delta_time) -> void {
   if (!m_video_capture->isOpened()) return;
 
   cv::Mat frame_input;
-
-  if (m_video_capture->read(frame_input)) {
+#if 0
+  if (m_video_capture->read(frame_input)) 
+ 
     cv::Mat rgb_frame;
     cv::Mat frame = m_image_renderer->getBlackWhiteImage(frame_input);
 
@@ -91,6 +93,7 @@ auto Main::_process(double delta_time) -> void {
     Ref<ImageTexture> texture = ImageTexture::create_from_image(image);
 
     m_image_display->set_texture(texture);
-  }
+#endif
 }
+
 }  // namespace chess
