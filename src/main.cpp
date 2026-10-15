@@ -67,8 +67,9 @@ auto Main::_process(double delta_time) -> void {
   if (!m_video_capture->isOpened()) return;
 
   cv::Mat frame_input;
-
-  if (m_video_capture->read(frame_input)) {
+  #if 0
+  if (m_video_capture->read(frame_input)) 
+ 
     cv::Mat rgb_frame;
     cv::Mat frame = m_image_renderer->getBlackWhiteImage(frame_input);
 
@@ -91,6 +92,7 @@ auto Main::_process(double delta_time) -> void {
     Ref<ImageTexture> texture = ImageTexture::create_from_image(image);
 
     m_image_display->set_texture(texture);
+    #endif
   }
-}
+  
 }  // namespace chess
