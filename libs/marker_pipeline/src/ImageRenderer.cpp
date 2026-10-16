@@ -11,7 +11,7 @@ auto ImageRenderer::getBlackWhiteImage(cv::Mat& frame) -> void {
   cv::cvtColor(frame, frame, cv::COLOR_BGR2GRAY);
 
   cv::threshold(
-      frame, frame, 175, 255, cv::THRESH_BINARY
+      frame, frame, 100, 255, cv::THRESH_BINARY
   );  // Threshoold may need to be changed for better resaults
 };
 
