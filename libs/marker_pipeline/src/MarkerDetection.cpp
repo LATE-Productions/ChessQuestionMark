@@ -1,8 +1,11 @@
 #include "MarkerDetection.hpp"
 
-#include <print>
-
 namespace late {
+
+MarkerDetection::MarkerDetection(double contourThreshold)
+    : m_contourThreshold(contourThreshold) {
+  assert(contourThreshold <= 1);
+}
 
 auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
     -> std::vector<Marker> {
@@ -20,8 +23,9 @@ auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
   // cv::drawContours(frame, contours, 0, cv::Scalar(0, 0, 255), 2);
 
   std::size_t id_generator = 0;
+  int contourThreshold     = (frame.cols * frame.rows) * m_contourThreshold;
   for (const auto& contour : contours) {
-    if (cv::contourArea(contour) < 10000) {
+    if (cv::contourArea(contour) < contourThreshold) {
       continue;  // Skipping small contours
     }
 
@@ -76,24 +80,14 @@ auto MarkerDetection::draw_markers(
 
     for (size_t i = 0; i < marker.m_corners.size(); ++i) {
       cv::Point corner(
-          cvRound(marker.m_corners[i].x), 
-          cvRound(marker.m_corners[i].y)
+          cvRound(marker.m_corners[i].x), cvRound(marker.m_corners[i].y)
       );
 
-      cv::circle(display_frame, 
-        corner, 
-        5, 
-        cv::Scalar(0, 0, 255), 
-        -1);
+      cv::circle(display_frame, corner, 5, cv::Scalar(0, 0, 255), -1);
 
       cv::putText(
-          display_frame, 
-          std::to_string(i), 
-          corner + cv::Point(5, -5), 
-          cv::FONT_HERSHEY_SIMPLEX, 
-          0.5, 
-          cv::Scalar(255, 0, 0), 
-          1
+          display_frame, std::to_string(i), corner + cv::Point(5, -5),
+          cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 0, 0), 1
       );
     }
   }
