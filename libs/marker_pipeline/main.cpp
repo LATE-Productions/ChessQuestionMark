@@ -1,6 +1,7 @@
 #include <atomic>
 #include <iostream>
 #include <memory>
+#include <opencv2/highgui.hpp>
 #include <opencv2/opencv.hpp>
 #include <stop_token>
 #include <thread>
@@ -32,14 +33,17 @@ int main() {
   int keyPressed = '1';
   while (true) {
     int key = cv::waitKey(5);
-    if (key == '1')
-      keyPressed = key;
-    else if (key == '2')
-      keyPressed = key;
-    else if (key == '3')
-      keyPressed = key;
-    else if (key == 27)
-      break;
+    switch (key) {
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+        keyPressed = key;
+        break;
+      default:
+        break;
+    }
+    if (key == 27) break;
     std::optional<cv::Mat> frame = buffer->read();
     if (frame) {
       shared_frame = frame.value();
@@ -58,6 +62,13 @@ int main() {
 
       if (keyPressed == '3')
         cv::imshow("Pipeline", debug_frame);  // Use for debug
+
+      if (keyPressed == '4') {
+        if (candidate_markers.size() > 0)
+          cv::imshow("Pipeline", candidate_markers[0].markerImage);
+        else
+          cv::imshow("Pipeline", debug_frame);  // Use for debug
+      }
     }
   }
 

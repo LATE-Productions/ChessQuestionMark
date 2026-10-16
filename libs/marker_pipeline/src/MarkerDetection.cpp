@@ -17,7 +17,7 @@ auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
 
   cv::findContours(frame, contours, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
   markers.reserve(contours.size());  // Reserve space for efficiency
-  //cv::drawContours(frame, contours, 0, cv::Scalar(0, 0, 255), 2);
+  // cv::drawContours(frame, contours, 0, cv::Scalar(0, 0, 255), 2);
 
   std::size_t id_generator = 0;
   for (const auto& contour : contours) {
@@ -43,18 +43,18 @@ auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
 
     marker.m_corners      = detect_corners(approx);
     marker.m_bounding_box = detect_rect(approx);
-    marker.m_markerImage  = frame(marker.m_bounding_box).clone();
-    marker.m_markerId     = id_generator++;  // Assigning a unique ID to the marker
+    marker.markerImage    = frame(marker.m_bounding_box).clone();
+    marker.m_markerId = id_generator++;  // Assigning a unique ID to the marker
     marker.m_contours.push_back(contour);
 
     markers.push_back(
         marker
     );  // May use embarkpush_back(std::move(marker)) for efficiency
 
-    //std::println("Detected marker with corners: ");
-    //for (const auto& corner : marker.m_corners) {
-    //  std::println("Corner: {}, {}", corner.x, corner.y);
-    //}
+    // std::println("Detected marker with corners: ");
+    // for (const auto& corner : marker.m_corners) {
+    //   std::println("Corner: {}, {}", corner.x, corner.y);
+    // }
   }
   return markers;
 }
