@@ -2,6 +2,7 @@
 #include <format>
 #include <iostream>
 #include <memory>
+#include <opencv2/core/types.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/opencv.hpp>
 #include <stop_token>
@@ -53,10 +54,10 @@ int main() {
           marker_detection.draw_markers(shared_frame, candidate_markers);
 
       std::vector<Marker> rectified_markers =
-        marker_rectification.rectify_markers(debug_frame, candidate_markers);
+          marker_rectification.rectify_markers(shared_frame, candidate_markers);
 
       cv::Mat rectified_debug_frame =
-        marker_detection.draw_markers(shared_frame, rectified_markers);
+          marker_detection.draw_markers(shared_frame, rectified_markers);
 
       if (keyPressed == '3')
         cv::imshow(windowTitle, debug_frame);  // Use for debug
@@ -73,9 +74,8 @@ int main() {
       if (keyPressed == '5') {
         cv::imshow(windowTitle, rectified_debug_frame);
         for (auto& rect : rectified_markers) {
-          cv::imshow(
-              std::format("rect {}", rect.m_markerId), rect.markerImage
-          );  // Use for debug
+          std::string rectWinName = std::format("rect {}", rect.m_markerId);
+          cv::imshow(rectWinName, rect.markerImage);  // Use for debug
         }
       }
     }
