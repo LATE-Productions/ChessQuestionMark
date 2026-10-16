@@ -2,6 +2,7 @@
 #include <format>
 #include <iostream>
 #include <memory>
+#include <opencv2/core/types.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/opencv.hpp>
 #include <stop_token>
@@ -11,6 +12,7 @@
 #include "ImageRenderer.hpp"
 #include "Marker.hpp"
 #include "MarkerDetection.hpp"
+#include "MarkerRectification.hpp"
 #include "RingBuffer.hpp"
 
 int main() {
@@ -18,6 +20,7 @@ int main() {
   using late::ImageRenderer;
   using late::Marker;
   using late::MarkerDetection;
+  using late::MarkerRectification;
   using late::OverflowPolicy;
   using late::RingBuffer;
   CameraCapture cameraCapture{};
@@ -29,6 +32,7 @@ int main() {
   cameraCapture.attach_output(buffer);
   ImageRenderer renderer{};
   MarkerDetection marker_detection{0.0005};
+  MarkerRectification marker_rectification{};
   std::string windowTitle = "Pipeline";
 
   int keyPressed = '1';
@@ -49,6 +53,12 @@ int main() {
       cv::Mat debug_frame =
           marker_detection.draw_markers(shared_frame, candidate_markers);
 
+      std::vector<Marker> rectified_markers =
+          marker_rectification.rectify_markers(shared_frame, candidate_markers);
+
+      cv::Mat rectified_debug_frame =
+          marker_detection.draw_markers(shared_frame, rectified_markers);
+
       if (keyPressed == '3')
         cv::imshow(windowTitle, debug_frame);  // Use for debug
 
@@ -60,6 +70,14 @@ int main() {
           );  // Use for debug
         }
       }
+
+      if (keyPressed == '5') {
+        cv::imshow(windowTitle, rectified_debug_frame);
+        for (auto& rect : rectified_markers) {
+          std::string rectWinName = std::format("rect {}", rect.m_markerId);
+          cv::imshow(rectWinName, rect.markerImage);  // Use for debug
+        }
+      }
     }
 
     int key = cv::waitKey(20);
@@ -68,6 +86,7 @@ int main() {
       case '2':
       case '3':
       case '4':
+      case '5':
         keyPressed = key;
         break;
       default:
