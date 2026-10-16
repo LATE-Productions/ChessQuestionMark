@@ -4,6 +4,7 @@
 #include <unordered_map>
 
 #include "Marker.hpp"
+#include "MarkerRectification.hpp"
 
 namespace late {
 class MarkerRecognition {

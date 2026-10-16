@@ -8,7 +8,5 @@
 | Assignment 2 | Lukas Karlsson |
 | Assignment 1 | Theo Johansson |
 | Assignment 2 | Theo Johansson |
-| Assignment 1 | Vilmer Juvin |
-| Assignment 2 | Vilmer Juvin |
 
 
