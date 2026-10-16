@@ -73,6 +73,29 @@ auto MarkerDetection::draw_markers(
     cv::drawContours(
         display_frame, marker.m_contours, -1, cv::Scalar(0, 255, 0), 2
     );
+
+    for (size_t i = 0; i < marker.m_corners.size(); ++i) {
+      cv::Point corner(
+          cvRound(marker.m_corners[i].x), 
+          cvRound(marker.m_corners[i].y)
+      );
+
+      cv::circle(display_frame, 
+        corner, 
+        5, 
+        cv::Scalar(0, 0, 255), 
+        -1);
+
+      cv::putText(
+          display_frame, 
+          std::to_string(i), 
+          corner + cv::Point(5, -5), 
+          cv::FONT_HERSHEY_SIMPLEX, 
+          0.5, 
+          cv::Scalar(255, 0, 0), 
+          1
+      );
+    }
   }
 
   return display_frame;

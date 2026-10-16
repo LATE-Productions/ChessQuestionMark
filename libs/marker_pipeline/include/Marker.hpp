@@ -33,5 +33,6 @@ namespace late {
             cv::Rect m_bounding_box;
             cv::Mat markerImage;
             std::size_t m_markerId;
+            std::size_t m_markerTemplateId;
     };
 }
