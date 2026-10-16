@@ -6,19 +6,19 @@
 namespace late {
 
 auto ImageRenderer::getBlackWhiteImage(cv::Mat& frame) -> void {
-  this->deNoise(frame);
+  // this->deNoise(frame);
 
   cv::cvtColor(frame, frame, cv::COLOR_BGR2GRAY);
 
   cv::threshold(
-      frame, frame, 175, 255, cv::THRESH_BINARY
+      frame, frame, 100, 255, cv::THRESH_BINARY
   );  // Threshoold may need to be changed for better resaults
 };
 
 auto ImageRenderer::deNoise(cv::Mat& frame) -> void {
   cv::Mat kernel = cv::getStructuringElement(
       cv::MORPH_ELLIPSE,
-      cv::Size(3, 3)  // Numbers may need to be tweaked for better resaults
+      cv::Size(1, 1)  // Numbers may need to be tweaked for better resaults
   );
 
   cv::morphologyEx(
