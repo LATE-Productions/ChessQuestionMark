@@ -1,4 +1,6 @@
 #include <atomic>
+#include <algorithm>
+#include <vector>
 #include <format>
 #include <iostream>
 #include <memory>
@@ -41,8 +43,13 @@ int main() {
   std::string windowTitle = "Pipeline";
 
   int keyPressed = '1';
+  std::vector<std::string> last_open_windows{};
+  std::vector<std::string> open_windows;
+
   while (true) {
     std::optional<cv::Mat> frame = buffer->read();
+    open_windows = std::vector<std::string>{};
+    open_windows.reserve(last_open_windows.capacity());
     if (frame) {
       shared_frame = frame.value();
       if (keyPressed == '1') cv::imshow(windowTitle, shared_frame);
@@ -80,11 +87,13 @@ int main() {
           ((float)rect.m_bounding_box.height / 2);
     
           cv::circle(rect.markerImage, center, 5, cv::Scalar(0, 0, 255), -1);
-
+          auto rectWinName = std::format("rect {}", rect.m_markerId);
           cv::imshow(
-              std::format("rect {}", rect.m_markerId), rect.markerImage
+            rectWinName, rect.markerImage
           );  // Use for debug
-
+          
+          open_windows.push_back(rectWinName);
+          std::erase(last_open_windows, rectWinName);
         }
       }
 
@@ -93,14 +102,21 @@ int main() {
         for (auto& rect : rectified_markers) {
           std::string rectWinName = std::format("rect {}", rect.m_markerId);
           cv::imshow(rectWinName, rect.markerImage);  // Use for debug
+          
+          open_windows.push_back(rectWinName);
+          std::erase(last_open_windows, rectWinName);
         }
       }
 
       if (keyPressed == '6'){
         cv::imshow(windowTitle, shared_frame);
+
         for (int i = 0; i < valid_markers.size(); i++){
-          std::string rectWinName = std::format("id: {}, index: {}", valid_markers[i].m_marker_id, i);
+          std::string rectWinName = std::format("id: {}", valid_markers[i].m_marker_id);
           cv::imshow(rectWinName, valid_markers[i].markerImage);  // Use for debug
+          
+          open_windows.push_back(rectWinName);
+          std::erase(last_open_windows, rectWinName);
         }
       }
     }
@@ -119,6 +135,11 @@ int main() {
         break;
     }
     if (key == 27) break;
+
+    for(const auto& winName: last_open_windows){
+      cv::destroyWindow(winName);
+    }
+    last_open_windows = open_windows;
   }
 
   return 0;

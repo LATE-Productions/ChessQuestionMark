@@ -18,13 +18,13 @@ class MarkerTemplate {
   MarkerTemplate(
       const std::array<bool, Dimensions * Dimensions>& inputTemplate
   );
-  MarkerTemplate(const MarkerTemplate<Dimensions>& other);
+  MarkerTemplate(const MarkerTemplate<Dimensions>& other) = default;
   MarkerTemplate<Dimensions>& operator=(
       const MarkerTemplate<Dimensions>& other
-  );
-  MarkerTemplate(MarkerTemplate<Dimensions>&& other);
-  MarkerTemplate<Dimensions>& operator=(MarkerTemplate<Dimensions>&& other);
-  ~MarkerTemplate();
+  ) = default;
+  MarkerTemplate(MarkerTemplate<Dimensions>&& other) = default;
+  MarkerTemplate<Dimensions>& operator=(MarkerTemplate<Dimensions>&& other) = default; 
+  ~MarkerTemplate() = default;
 
   void operator()(int size, cv::OutputArray output);
 
@@ -47,7 +47,7 @@ MarkerTemplate<Dimensions>::MarkerTemplate(
 
 template <std::size_t Dimensions>
 void MarkerTemplate<Dimensions>::operator()(int size, cv::OutputArray output) {
-  assert(size >= (Dimensions * 2) * (Dimensions * 2));
+  assert(size >= (Dimensions + 2));
   output.create(size, size, CV_8UC1);
   cv::resize(m_marker, output, output.size(), 0, 0, cv::INTER_NEAREST);
 }

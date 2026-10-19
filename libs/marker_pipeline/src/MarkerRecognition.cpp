@@ -1,52 +1,49 @@
 #include "MarkerRecognition.hpp"
+#include "MarkerTemplates.hpp"
+#include <array>
 #include <opencv2/opencv.hpp>
 
 namespace late {
 MarkerRecognition::MarkerRecognition(){
   // Make m_stored_markers here
-  cv::Mat template0 = (cv::Mat_<uchar>(8, 8) << 
-    0, 0,   0,   0,   0,   0,   0,   0,
-    0, 0,   0,   0,   255, 255, 255, 0,
-    0, 255, 0,   0,   0 ,  255, 255, 0,
-    0, 255, 255, 0,   255, 255, 255, 0,
-    0, 0,   255, 255, 0,   0,   0,   0,
-    0, 0,   0,   255, 0,   255, 0,   0,
-    0, 255, 0,   0,   255, 255, 0,   0,
-    0, 0,   0,   0,   0,   0,   0,   0
-  );
 
-  m_stored_markers.insert({0, template0});
+  m_stored_markers.insert({0, std::array<bool, 36>{
+    0, 0, 0, 1, 1, 1, 
+    1, 0, 0, 0, 1, 1, 
+    1, 1, 0, 1, 1, 1, 
+    0, 1, 1, 0, 0, 0,   
+    0, 0, 1, 0, 1, 0,   
+    1, 0, 0, 1, 1, 0,   
+ }});
 
-  cv::Mat template1 = (cv::Mat_<uchar>(8, 8) << 
-    0, 0,   0,   0,   0,   0,   0,   0,
-    0, 0,   0,   0,   0,   255, 255, 0,
-    0, 255, 0,   255, 255, 255, 255, 0,
-    0, 255, 0,   255, 255, 255, 0,   0,
-    0, 255, 0,   0,   0,   255, 255, 0,
-    0, 255, 0,   0,   0,   255, 0,   0,
-    0, 0,   255, 0,   0,   0,   255, 0,
-    0, 0,   0,   0,   0,   0,   0,   0
-  );
-
-  m_stored_markers.insert({1, template1});
-
-  cv::Mat template2 = (cv::Mat_<uchar>(8, 8) << 
-    0, 0,   0,   0,   0,   0,   0,   0,
-    0, 0,   0,   0,   255, 0,   255, 0,
-    0, 0,   255, 255, 0,   0,   255, 0,
-    0, 0,   0,   0,   0,   0,   255, 0,
-    0, 255, 255, 255, 255, 255, 0,   0,
-    0, 255, 0,   255, 0,   255, 255, 0,
-    0, 0,   0,   255, 255, 0,   255, 0,
-    0, 0,   0,   0,   0,   0,   0,   0
-  );  
+  m_stored_markers.insert({1, std::array<bool, 36>{
+    0, 0, 0, 0, 1, 1,
+    1, 0, 1, 1, 1, 1,
+    1, 0, 1, 1, 1, 0,  
+    1, 0, 0, 0, 1, 1,
+    1, 0, 0, 0, 1, 0,  
+    0, 1, 0, 0, 0, 1
+  }});
   
-  m_stored_markers.insert({2, template2});
+  m_stored_markers.insert({2, std::array<bool, 36>{
+    0, 0, 0, 1, 0, 1,
+    0, 1, 1, 0, 0, 1,
+    0, 0, 0, 0, 0, 1,
+    1, 1, 1, 1, 1, 0,  
+    1, 0, 1, 0, 1, 1,
+    0, 0, 1, 1, 0, 1
+  }});
 };
 
 auto MarkerRecognition::GetValidMarkers(const std::vector<CandidateMarker>& markers) -> std::vector<Marker>{
   std::vector<Marker> valid_markers{};
   for(const auto& marker : markers){
+    if((std::abs(marker.markerImage.cols - marker.markerImage.rows) > m_marker_square_threshold)){ // Ignore non-square markers
+      continue;
+    }
+
+    if(marker.markerImage.cols < 8) continue;
+
     Marker valid_marker;
     if (DecodeMarker(marker, valid_marker)){
       valid_markers.push_back(valid_marker);
@@ -76,14 +73,10 @@ auto MarkerRecognition::DecodeMarker(const CandidateMarker& candidate_marker, Ma
   for(const auto& entry : m_stored_markers){
     
     const int id = entry.first;
-    cv::Mat reference_matrix = entry.second;
-    
-    if(std::abs(reference_matrix.cols - reference_matrix.rows) > m_marker_square_threshold){ // Ignore non-square markers
-      continue;
-    }
+    auto reference_marker = entry.second;
     
     cv::Mat resized_reference_marker;
-    cv::resize(reference_matrix, resized_reference_marker, cv::Size(candidate_marker.markerImage.cols, candidate_marker.markerImage.rows));
+    reference_marker(candidate_marker.markerImage.cols, resized_reference_marker);
 
     for (int rotation = 0; rotation <= 4; rotation++){
       cv::Mat candidate = RotateMat(resized_reference_marker, rotation);

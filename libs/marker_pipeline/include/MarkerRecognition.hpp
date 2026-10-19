@@ -4,6 +4,7 @@
 #include <limits>
 #include "Marker.hpp"
 #include "MarkerRectification.hpp"
+#include "MarkerTemplates.hpp"
 
 namespace late {
 class MarkerRecognition {
@@ -16,8 +17,8 @@ class MarkerRecognition {
   auto HammingDistance(const cv::Mat& a, const cv::Mat b) -> int;
   auto RotateMat(const cv::Mat& mat, int k) -> cv::Mat;
   auto GetCenter(const CandidateMarker& candidate_marker) -> cv::Point3f;
-  std::map<int, cv::Mat> m_stored_markers;
+  std::map<int, MarkerTemplate<6>> m_stored_markers;
   int m_marker_square_threshold = 5;
-  float m_marker_match_percentage = 0.75f;
+  float m_marker_match_percentage = 0.85f;
 };
 }  // namespace late
