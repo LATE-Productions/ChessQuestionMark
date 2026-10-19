@@ -9,14 +9,15 @@ namespace late {
 class MarkerRecognition {
   public:
   MarkerRecognition();
-  auto GetValidMarkers(const std::vector<Marker>& markers) -> std::vector<CandidateMarker>;
+  auto GetValidMarkers(const std::vector<CandidateMarker>& markers) -> std::vector<Marker>;
 
   private:
-  auto DecodeMarker(const Marker& marker, CandidateMarker& destination) -> bool;
+  auto DecodeMarker(const CandidateMarker& candidate_marker, Marker& destination) -> bool;
   auto HammingDistance(const cv::Mat& a, const cv::Mat b) -> int;
   auto RotateMat(const cv::Mat& mat, int k) -> cv::Mat;
-  std::map<cv::Mat, int> m_stored_markers;
+  auto GetCenter(const CandidateMarker& candidate_marker) -> cv::Point3f;
+  std::map<int, cv::Mat> m_stored_markers;
   int m_marker_square_threshold = 5;
-  float m_marker_match_percentage = 0.85f;
+  float m_marker_match_percentage = 0.75f;
 };
 }  // namespace late

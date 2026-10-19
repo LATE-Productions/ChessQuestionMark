@@ -24,7 +24,7 @@ using godot::ImageTexture;
 using godot::PackedByteArray;
 using godot::Ref;
 
-using late::Marker;
+using late::CandidateMarker;
 
 auto Main::_ready() -> void {
   std::string video_canvas_name = "VideoCanvasLayer";
@@ -74,7 +74,7 @@ auto Main::_process(double delta_time) -> void {
     cv::Mat rgb_frame;
     cv::Mat frame = m_image_renderer->getBlackWhiteImage(frame_input);
 
-    std::vector<Marker> candidate_markers =
+    std::vector<CandidateMarker> candidate_markers =
         m_marker_detection->detect_candidate_markers(frame);
     cv::Mat debug_frame =
         m_marker_detection->draw_markers(frame, candidate_markers);

@@ -8,8 +8,8 @@
 namespace late {
 
 auto MarkerRectification::rectify_markers(
-    const cv::Mat& frame, std::vector<Marker>& markers
-) -> std::vector<Marker> {
+    const cv::Mat& frame, std::vector<CandidateMarker>& markers
+) -> std::vector<CandidateMarker> {
   for (auto& marker : markers) {
     marker.markerImage = rectify_markerImage(frame, marker);
   }
@@ -17,7 +17,7 @@ auto MarkerRectification::rectify_markers(
 }
 
 auto MarkerRectification::rectify_markerImage(
-    const cv::Mat& frame, const Marker& marker
+    const cv::Mat& frame, const CandidateMarker& marker
 ) -> cv::Mat {
   int rows                               = marker.markerImage.rows - 1;
   int cols                               = marker.markerImage.cols - 1;

@@ -8,8 +8,8 @@ MarkerDetection::MarkerDetection(double contourThreshold)
 }
 
 auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
-    -> std::vector<Marker> {
-  std::vector<Marker> markers{};
+    -> std::vector<CandidateMarker> {
+  std::vector<CandidateMarker> markers{};
   std::array<cv::Point2f, 4> corners{};
 
   if (frame.empty()) {
@@ -43,7 +43,7 @@ auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
       continue;  // Skipping non-convex contours
     }
 
-    Marker marker;
+    CandidateMarker marker;
 
     marker.m_corners      = detect_corners(approx);
     marker.m_bounding_box = detect_rect(approx);
@@ -64,7 +64,7 @@ auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
 }
 
 auto MarkerDetection::draw_markers(
-    const cv::Mat& frame, const std::vector<Marker> markers
+    const cv::Mat& frame, const std::vector<CandidateMarker> markers
 ) -> cv::Mat {
   cv::Mat display_frame;
   cv::cvtColor(frame, display_frame, cv::COLOR_GRAY2BGR);
@@ -90,6 +90,12 @@ auto MarkerDetection::draw_markers(
           cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 0, 0), 1
       );
     }
+
+    cv::Point2f center;
+    center.x = marker.m_corners[0].x + (marker.m_bounding_box.width / 2);
+    center.y = marker.m_corners[0].y + (marker.m_bounding_box.height / 2);
+
+    cv::circle(display_frame, center, 5, cv::Scalar(0, 255, 0), -1);
   }
 
   return display_frame;
