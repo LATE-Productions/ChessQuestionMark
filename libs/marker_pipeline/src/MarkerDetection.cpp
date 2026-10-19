@@ -1,8 +1,11 @@
 #include "MarkerDetection.hpp"
 
-#include <print>
-
 namespace late {
+
+MarkerDetection::MarkerDetection(double contourThreshold)
+    : m_contourThreshold(contourThreshold) {
+  assert(contourThreshold <= 1);
+}
 
 auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
     -> std::vector<Marker> {
@@ -16,10 +19,13 @@ auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
   std::vector<std::vector<cv::Point>> contours;
 
   cv::findContours(frame, contours, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
-  //cv::drawContours(frame, contours, 0, cv::Scalar(0, 0, 255), 2);
+  markers.reserve(contours.size());  // Reserve space for efficiency
+  // cv::drawContours(frame, contours, 0, cv::Scalar(0, 0, 255), 2);
 
+  std::size_t id_generator = 0;
+  int contourThreshold     = (frame.cols * frame.rows) * m_contourThreshold;
   for (const auto& contour : contours) {
-    if (cv::contourArea(contour) < 10000) {
+    if (cv::contourArea(contour) < contourThreshold) {
       continue;  // Skipping small contours
     }
 
@@ -41,16 +47,18 @@ auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
 
     marker.m_corners      = detect_corners(approx);
     marker.m_bounding_box = detect_rect(approx);
+    marker.markerImage    = frame(marker.m_bounding_box).clone();
+    marker.m_markerId = id_generator++;  // Assigning a unique ID to the marker
     marker.m_contours.push_back(contour);
 
     markers.push_back(
         marker
     );  // May use embarkpush_back(std::move(marker)) for efficiency
 
-    //std::println("Detected marker with corners: ");
-    //for (const auto& corner : marker.m_corners) {
-    //  std::println("Corner: {}, {}", corner.x, corner.y);
-    //}
+    // std::println("Detected marker with corners: ");
+    // for (const auto& corner : marker.m_corners) {
+    //   std::println("Corner: {}, {}", corner.x, corner.y);
+    // }
   }
   return markers;
 }
@@ -69,6 +77,19 @@ auto MarkerDetection::draw_markers(
     cv::drawContours(
         display_frame, marker.m_contours, -1, cv::Scalar(0, 255, 0), 2
     );
+
+    for (size_t i = 0; i < marker.m_corners.size(); ++i) {
+      cv::Point corner(
+          cvRound(marker.m_corners[i].x), cvRound(marker.m_corners[i].y)
+      );
+
+      cv::circle(display_frame, corner, 5, cv::Scalar(0, 0, 255), -1);
+
+      cv::putText(
+          display_frame, std::to_string(i), corner + cv::Point(5, -5),
+          cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 0, 0), 1
+      );
+    }
   }
 
   return display_frame;

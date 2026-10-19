@@ -6,7 +6,7 @@
 namespace late {
 
 auto ImageRenderer::getBlackWhiteImage(cv::Mat& frame) -> void {
-  this->deNoise(frame);
+  // this->deNoise(frame);
 
   cv::cvtColor(frame, frame, cv::COLOR_BGR2GRAY);
 
@@ -18,7 +18,7 @@ auto ImageRenderer::getBlackWhiteImage(cv::Mat& frame) -> void {
 auto ImageRenderer::deNoise(cv::Mat& frame) -> void {
   cv::Mat kernel = cv::getStructuringElement(
       cv::MORPH_ELLIPSE,
-      cv::Size(3, 3)  // Numbers may need to be tweaked for better resaults
+      cv::Size(1, 1)  // Numbers may need to be tweaked for better resaults
   );
 
   cv::morphologyEx(

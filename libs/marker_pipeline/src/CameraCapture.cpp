@@ -8,6 +8,10 @@ CameraCapture::CameraCapture()
       m_outputs{},
       m_mutex{},
       m_running{true} {
+        m_captureFeed->set(cv::CAP_PROP_AUTO_EXPOSURE, 0.25);
+        m_captureFeed->set(cv::CAP_PROP_EXPOSURE, -6);
+        m_captureFeed->set(cv::CAP_PROP_GAIN, 0.0);
+
   m_captureThread = std::thread([&]() {
     while (m_running && m_captureFeed->isOpened()) {
       cv::Mat frame;
