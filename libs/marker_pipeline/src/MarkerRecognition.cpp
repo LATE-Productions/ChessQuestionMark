@@ -4,19 +4,20 @@
 #include <opencv2/opencv.hpp>
 
 namespace late {
-MarkerRecognition::MarkerRecognition(){
-  // Make m_stored_markers here
+MarkerRecognition::MarkerRecognition(double markerMatchPercentage)
+    : m_markerMatchPercentage(markerMatchPercentage){
+  // Make m_storedMarkers here
 
-  m_stored_markers.insert({0, std::array<bool, 36>{
-    0, 0, 0, 1, 1, 1, 
-    1, 0, 0, 0, 1, 1, 
-    1, 1, 0, 1, 1, 1, 
-    0, 1, 1, 0, 0, 0,   
-    0, 0, 1, 0, 1, 0,   
-    1, 0, 0, 1, 1, 0,   
+  m_storedMarkers.insert({0, std::array<bool, 36>{
+    0, 0, 0, 1, 1, 1,
+    1, 0, 0, 0, 1, 1,
+    1, 1, 0, 1, 1, 1,
+    0, 1, 1, 0, 0, 0,
+    0, 0, 1, 0, 1, 0,
+    1, 0, 0, 1, 1, 0,
  }});
 
-  m_stored_markers.insert({1, std::array<bool, 36>{
+  m_storedMarkers.insert({1, std::array<bool, 36>{
     0, 0, 0, 0, 1, 1,
     1, 0, 1, 1, 1, 1,
     1, 0, 1, 1, 1, 0,  
@@ -25,7 +26,7 @@ MarkerRecognition::MarkerRecognition(){
     0, 1, 0, 0, 0, 1
   }});
   
-  m_stored_markers.insert({2, std::array<bool, 36>{
+  m_storedMarkers.insert({2, std::array<bool, 36>{
     0, 0, 0, 1, 0, 1,
     0, 1, 1, 0, 0, 1,
     0, 0, 0, 0, 0, 1,
@@ -36,80 +37,80 @@ MarkerRecognition::MarkerRecognition(){
 };
 
 auto MarkerRecognition::GetValidMarkers(const std::vector<CandidateMarker>& markers) -> std::vector<Marker>{
-  std::vector<Marker> valid_markers{};
+  std::vector<Marker> validMarkers{};
   for(const auto& marker : markers){
-    if((std::abs(marker.markerImage.cols - marker.markerImage.rows) > m_marker_square_threshold)){ // Ignore non-square markers
+    if(marker.markerImage.cols - marker.markerImage.rows != 0){ // Ignore non-square markers
       continue;
     }
 
     if(marker.markerImage.cols < 8) continue;
 
-    Marker valid_marker;
-    if (DecodeMarker(marker, valid_marker)){
-      valid_markers.push_back(valid_marker);
+    Marker validMarker;
+    if (DecodeMarker(marker, validMarker)){
+      validMarkers.push_back(validMarker);
     }
   }
 
-  if(valid_markers.size() > 0){
-    std::cout << "valid markers found: " << valid_markers.size() << std::endl;
-    for (const auto& valid_marker : valid_markers){
-      std::cout << "Valid marker ID: " << valid_marker.m_marker_id << std::endl;
+  if(validMarkers.size() > 0){
+    std::cout << "valid markers found: " << validMarkers.size() << std::endl;
+    for (const auto& validMarker : validMarkers){
+      std::cout << "Valid marker ID: " << validMarker.m_markerId << std::endl;
     }
   }
   else{
     std::cout << "No valid markers" << std::endl;
   }
 
-  return valid_markers;
+  return validMarkers;
 };
 
-auto MarkerRecognition::DecodeMarker(const CandidateMarker& candidate_marker, Marker& destination) -> bool{
-  int best_distance = std::numeric_limits<int>::max();
-  int second_distance = std::numeric_limits<int>::max();
+auto MarkerRecognition::DecodeMarker(const CandidateMarker& candidateMarker, Marker& destination) -> bool{
+  int bestDistance = std::numeric_limits<int>::max();
+  int secondDistance = std::numeric_limits<int>::max();
 
-  int best_id = -1;
-  int best_rotation = 0;
+  int bestId = -1;
+  int bestRotation = 0;
 
-  for(const auto& entry : m_stored_markers){
+  for(const auto& entry : m_storedMarkers){
     
     const int id = entry.first;
-    auto reference_marker = entry.second;
+    auto referenceMarker = entry.second;
     
-    cv::Mat resized_reference_marker;
-    reference_marker(candidate_marker.markerImage.cols, resized_reference_marker);
+    cv::Mat resizedReferenceMarker;
+    referenceMarker(candidateMarker.markerImage.cols, resizedReferenceMarker);
 
-    for (int rotation = 0; rotation <= 4; rotation++){
-      cv::Mat candidate = RotateMat(resized_reference_marker, rotation);
+    for (int rotation = 0; rotation <= 4; rotation++){ // To be changed to use the cached rotations
+      cv::Mat candidate = RotateMat(resizedReferenceMarker, rotation);
 
-      int distance = HammingDistance(candidate, candidate_marker.markerImage);
+      int distance = HammingDistance(candidate, candidateMarker.markerImage);
       //std::cout << "Hamming distance: " << distance << " of " << candidate.cols * candidate.rows  << " pixels" << std::endl;
 
-      if (distance >= 0 && distance < best_distance){
-        second_distance = best_distance;
-        best_distance = distance;
-        best_id = id;
-        best_rotation = rotation;
+      if (distance >= 0 && distance < bestDistance){
+        secondDistance = bestDistance;
+        bestDistance = distance;
+        bestId = id;
+        bestRotation = rotation;
       }
-      else if (distance >= 0 && distance < second_distance){
-        second_distance = distance;
+      else if (distance >= 0 && distance < secondDistance){
+        secondDistance = distance;
       }
     }
   }
 
-  int max_errors = (candidate_marker.markerImage.cols * candidate_marker.markerImage.rows) * (1 - m_marker_match_percentage);
-  double dist = max_errors / static_cast<double>(best_distance);
-  std::cout << "Max errors: " << max_errors << " with " << best_distance << " errors dist: " << dist << std::endl;
-  if (best_distance < 0 || best_distance > max_errors){
+  int maxErrors = (candidateMarker.markerImage.cols * candidateMarker.markerImage.rows) * (1 - m_markerMatchPercentage);
+  double dist = maxErrors / static_cast<double>(bestDistance);
+  std::cout << "Max errors: " << maxErrors << " with " << bestDistance << " errors dist: " << dist << std::endl;
+  if (bestDistance < 0 || bestDistance > maxErrors){
     return false;
   }
 
-  if (second_distance == best_distance){ // Not rotation safe, not a valid marker
+  if (secondDistance == bestDistance){ // Not rotation safe, not a valid marker
     return false;
   }
 
-  destination.m_marker_id = best_id;
-  destination.m_marker_pos = GetCenter(candidate_marker);
-  destination.markerImage = candidate_marker.markerImage;
+  destination.m_markerId = bestId;
+  destination.m_markerPos = GetCenter(candidateMarker);
+  destination.markerImage = candidateMarker.markerImage;
 
   return true;
 };
@@ -146,10 +147,10 @@ auto MarkerRecognition::RotateMat(const cv::Mat& mat, int k) -> cv::Mat{
   return result;
 };
 
-auto MarkerRecognition::GetCenter(const CandidateMarker& candidate_marker) -> cv::Point3f{
+auto MarkerRecognition::GetCenter(const CandidateMarker& candidateMarker) -> cv::Point3f{
   cv::Point3f center;
-  center.x = candidate_marker.m_corners[0].x + ((float)candidate_marker.m_bounding_box.width / 2);
-  center.y = candidate_marker.m_corners[0].y + ((float)candidate_marker.m_bounding_box.height / 2);
+  center.x = candidateMarker.m_corners[0].x + ((double)candidateMarker.m_bounding_box.width / 2);
+  center.y = candidateMarker.m_corners[0].y + ((double)candidateMarker.m_bounding_box.height / 2);
   center.z = 0;
   return center;
 };

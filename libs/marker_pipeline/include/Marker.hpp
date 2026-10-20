@@ -19,8 +19,8 @@ namespace late {
     };
 
     struct Marker {
-        int m_marker_id;
-        cv::Point3f m_marker_pos;
+        int m_markerId;
+        cv::Point3f m_markerPos;
         cv::Mat markerImage;
     };
 

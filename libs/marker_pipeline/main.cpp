@@ -39,7 +39,7 @@ int main() {
   ImageRenderer renderer{};
   MarkerDetection marker_detection{0.0005};
   MarkerRectification marker_rectification{};
-  MarkerRecognition marker_recognition{};
+  MarkerRecognition marker_recognition{0.85};
   std::string windowTitle = "Pipeline";
 
   int keyPressed = '1';
@@ -112,7 +112,7 @@ int main() {
         cv::imshow(windowTitle, shared_frame);
 
         for (int i = 0; i < valid_markers.size(); i++){
-          std::string rectWinName = std::format("id: {}", valid_markers[i].m_marker_id);
+          std::string rectWinName = std::format("id: {}", valid_markers[i].m_markerId);
           cv::imshow(rectWinName, valid_markers[i].markerImage);  // Use for debug
           
           open_windows.push_back(rectWinName);
