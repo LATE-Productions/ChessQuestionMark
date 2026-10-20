@@ -76,14 +76,17 @@ auto MarkerRecognition::DecodeMarker(const CandidateMarker& candidateMarker, Mar
     const int id = entry.first;
     auto referenceMarker = entry.second;
     
-    cv::Mat resizedReferenceMarker;
-    referenceMarker(candidateMarker.markerImage.cols, resizedReferenceMarker);
+    std::array<cv::Mat, 4> markerRotations = {
+      referenceMarker(candidateMarker.markerImage.cols, MarkerTemplate<6>::Rotation::NONE),
+      referenceMarker(candidateMarker.markerImage.cols, MarkerTemplate<6>::Rotation::ROTATE_90),
+      referenceMarker(candidateMarker.markerImage.cols, MarkerTemplate<6>::Rotation::ROTATE_180),
+      referenceMarker(candidateMarker.markerImage.cols, MarkerTemplate<6>::Rotation::ROTATE_270),
+    };
 
-    for (int rotation = 0; rotation <= 4; rotation++){ // To be changed to use the cached rotations
-      cv::Mat candidate = RotateMat(resizedReferenceMarker, rotation);
-
+    int rotation = 0;
+    for (const cv::Mat& candidate: markerRotations){ 
       int distance = HammingDistance(candidate, candidateMarker.markerImage);
-      //std::cout << "Hamming distance: " << distance << " of " << candidate.cols * candidate.rows  << " pixels" << std::endl;
+      std::cout << "Hamming distance: " << distance << " of " << candidate.cols * candidate.rows  << " pixels" << std::endl;
 
       if (distance >= 0 && distance < bestDistance){
         secondDistance = bestDistance;
@@ -94,12 +97,13 @@ auto MarkerRecognition::DecodeMarker(const CandidateMarker& candidateMarker, Mar
       else if (distance >= 0 && distance < secondDistance){
         secondDistance = distance;
       }
+      rotation += 90;
     }
   }
 
   int maxErrors = (candidateMarker.markerImage.cols * candidateMarker.markerImage.rows) * (1 - m_markerMatchPercentage);
   double dist = maxErrors / static_cast<double>(bestDistance);
-  std::cout << "Max errors: " << maxErrors << " with " << bestDistance << " errors dist: " << dist << std::endl;
+  //std::cout << "Max errors: " << maxErrors << " with " << bestDistance << " errors dist: " << dist << std::endl;
   if (bestDistance < 0 || bestDistance > maxErrors){
     return false;
   }

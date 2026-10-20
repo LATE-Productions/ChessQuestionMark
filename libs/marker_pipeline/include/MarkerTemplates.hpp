@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <array>
+#include <print>
 #include <cassert>
 #include <cstddef>
 #include <cstdlib>
@@ -71,12 +72,7 @@ MarkerTemplate<Dimensions>::MarkerTemplate(
 template <std::size_t Dimensions>
 auto MarkerTemplate<Dimensions>::operator()(int size) -> cv::Mat& {
   assert(size >= (Dimensions + 2));
-  if (size == Dimensions + 2) return m_markerBase;
-  if (m_cacheBase.contains(size)) return m_cacheBase[size];
-  m_cacheBase[size] = cv::Mat{size, size, CV_8UC1};
-  auto& output      = m_cacheBase[size];
-  cv::resize(m_markerBase, output, output.size(), 0, 0, cv::INTER_NEAREST);
-  return output;
+  return this(size, Rotation::NONE);
 }
 
 template <std::size_t Dimensions>
@@ -85,6 +81,7 @@ auto MarkerTemplate<Dimensions>::operator()(int size, Rotation rotation)
   assert(size >= (Dimensions + 2));
   cv::Mat* marker;
   std::unordered_map<int, cv::Mat>* cache;
+  int rot = 0;
   switch (rotation) {
     case Rotation::NONE:
       marker = &m_markerBase;
@@ -93,20 +90,27 @@ auto MarkerTemplate<Dimensions>::operator()(int size, Rotation rotation)
     case Rotation::ROTATE_90:
       marker = &m_markerRotation90;
       cache  = &m_cacheRotation90;
+      rot = 90;
       break;
     case Rotation::ROTATE_180:
       marker = &m_markerRotation180;
       cache  = &m_cacheRotation180;
+      rot = 180;
+      break;
     case Rotation::ROTATE_270:
       marker = &m_markerRotation270;
       cache  = &m_cacheRotation270;
+      rot = 270;
+      break;
   }
   if (size == Dimensions + 2) return *marker;
-  if (m_cacheBase.contains(size)) return cache->at(size);
-  cache->insert({size, cv::Mat{size, size, CV_8UC1}});
-  auto& output = cache->at(size);
-  cv::resize(*marker, output, output.size(), 0, 0, cv::INTER_NEAREST);
-  return output;
+  if (cache->contains(size)) {
+    std::println("cache hit for rotation {} and size {}", rot, size);
+    return cache->at(size);
 }
-
+  cv::Mat output;
+  cv::resize(*marker, output, cv::Size(size, size), 0, 0, cv::INTER_NEAREST);
+  cache->insert_or_assign(size, std::move(output));
+  return cache->at(size);
+}
 }  // namespace late
