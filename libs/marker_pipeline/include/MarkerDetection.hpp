@@ -10,8 +10,8 @@ class MarkerDetection {
  public:
   MarkerDetection(double minContourThreshold, double maxContourThreshold);
 
-  auto detect_candidate_markers(cv::Mat& frame) -> std::vector<Marker>;
-  auto draw_markers(const cv::Mat& frame, const std::vector<Marker> markers)
+  auto detect_candidate_markers(cv::Mat& frame) -> std::vector<CandidateMarker>;
+  auto draw_markers(const cv::Mat& frame, const std::vector<CandidateMarker> markers)
       -> cv::Mat;
 
  protected:

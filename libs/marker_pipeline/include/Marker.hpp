@@ -18,13 +18,13 @@ namespace late {
         Black
     };
 
-    struct CandidateMarker {
-        PieceType type;
-        PieceColor color;
-        cv::Point3f position;
+    struct Marker {
+        int m_markerId;
+        cv::Point3f m_markerPos;
+        cv::Mat markerImage;
     };
 
-    class Marker {
+    class CandidateMarker {
 
         public:
 

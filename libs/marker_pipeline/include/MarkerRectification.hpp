@@ -7,11 +7,11 @@
 namespace late {
 class MarkerRectification {
  public:
-  auto rectify_markers(const cv::Mat& frame, std::vector<Marker>& markers)
-      -> std::vector<Marker>;
+  auto rectify_markers(const cv::Mat& frame, std::vector<CandidateMarker>& markers)
+      -> std::vector<CandidateMarker>;
 
  private:
-  auto rectify_markerImage(const cv::Mat& frame, const Marker& marker)
+  auto rectify_markerImage(const cv::Mat& frame, const CandidateMarker& marker)
       -> cv::Mat;
 };
 
