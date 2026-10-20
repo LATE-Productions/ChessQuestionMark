@@ -27,7 +27,7 @@ auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
   int minContourThreshold     = (frame.cols * frame.rows) * m_minContourThreshold;
   int maxContourThreshold     = (frame.cols * frame.rows) * m_maxContourThreshold;
   for (const auto& contour : contours) {
-    if (cv::contourArea(contour) < minContourThreshold && cv::contourArea(contour) > maxContourThreshold) {
+    if (cv::contourArea(contour) < minContourThreshold || cv::contourArea(contour) > maxContourThreshold) {
       continue;  // Skipping too small and too large contours
     }
 
@@ -35,17 +35,17 @@ auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
 
     const double perimeter = cv::arcLength(contour, true);
 
-    cv::approxPolyDP(contour, approx, 0.03 * perimeter, true);
+    cv::approxPolyDP(contour, approx, 0.02 * perimeter, true);
 
-    // if (approx.size() != 4) {
-    //   continue;  // Skipping non-rectangular contours
-    // }
+    if (approx.size() != 4) {
+      continue;  // Skipping non-rectangular contours
+    }
 
     if (!cv::isContourConvex(approx)) {
       continue;  // Skipping non-convex contours
     }
 
-    if (!equilateral_control(approx, 0.15)) {
+    if (!equilateral_control(approx, 0.50)) {
       continue;
     }
 
