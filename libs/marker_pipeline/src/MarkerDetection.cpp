@@ -5,7 +5,7 @@ namespace late {
 MarkerDetection::MarkerDetection(double minContourThreshold, double maxContourThreshold)
     : m_minContourThreshold(minContourThreshold * minContourThreshold), m_maxContourThreshold(maxContourThreshold * maxContourThreshold) {
   assert(m_minContourThreshold <= 1);
-  assert(m_maxContourThreshold <= 1 && m_maxContourThreshold > m_minCountourThreshold);
+  assert(m_maxContourThreshold <= 1 && m_maxContourThreshold > m_minContourThreshold);
 }
 
 auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
@@ -45,9 +45,11 @@ auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
       continue;  // Skipping non-convex contours
     }
 
-    if (!equilateral_control(approx, 0.15))
+    if (!equilateral_control(approx, 0.15)) {
+      continue;
+    }
 
-    Marker marker;
+    CandidateMarker marker;
 
     marker.m_corners      = detect_corners(approx);
     marker.m_bounding_box = detect_rect(approx);
@@ -159,13 +161,13 @@ auto MarkerDetection::detect_rect(const std::vector<cv::Point>& contour)
 auto MarkerDetection::equilateral_control(const std::vector<cv::Point>& contour, const double& threshold)
     -> bool {
 
-      if (!contour.size(4)) {
+      if (contour.size() != 4) {
         return false;
       }
 
       cv::Point v1 = contour[1] - contour[0];
       cv::Point v2 = contour[2] - contour[1];
-      cv::Point v3 = cotour[3] - contour[2];
+      cv::Point v3 = contour[3] - contour[2];
       cv::Point v4 = contour[0] - contour[3];
 
       double l1 = cv::norm(v1);
@@ -177,10 +179,10 @@ auto MarkerDetection::equilateral_control(const std::vector<cv::Point>& contour,
       bool valid = true;
 
       for (int i = 0; i < 4; i++) {
-        for (int j = i + 1; < 4; j++) {
+        for (int j = i + 1; j < 4; j++) {
           if (std::abs(
-                  length[i] - length[j] >
-                  threshold * std::max(length[i], lengths[j])
+                  lengths[i] - lengths[j] >
+                  threshold * std::max(lengths[i], lengths[j])
               )) {
             valid = false;
             break;

@@ -24,7 +24,7 @@ class Main : public godot::Node {
         m_image_display{nullptr},
         m_video_capture{nullptr},
         m_image_renderer(std::make_unique<ImageRenderer>()),
-        m_marker_detection(std::make_unique<MarkerDetection>(0.0005)) {}
+        m_marker_detection(std::make_unique<MarkerDetection>(0.025, 0.25)) {}
   ~Main() = default;
 
   auto _ready() -> void override;

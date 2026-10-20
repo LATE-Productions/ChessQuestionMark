@@ -24,8 +24,7 @@ class MarkerDetection {
   auto equilateral_control(const std::vector<cv::Point>& contour, const double& threshold) -> bool;
 
  private:
-  double m_minCountourThreshold;
+  double m_minContourThreshold;
   double m_maxContourThreshold;
 };
-
 }  // namespace late
