@@ -2,9 +2,10 @@
 
 namespace late {
 
-MarkerDetection::MarkerDetection(double contourThreshold)
-    : m_contourThreshold(contourThreshold) {
-  assert(contourThreshold <= 1);
+MarkerDetection::MarkerDetection(double minContourThreshold, double maxContourThreshold)
+    : m_minContourThreshold(minContourThreshold * minContourThreshold), m_maxContourThreshold(maxContourThreshold * maxContourThreshold) {
+  assert(m_minContourThreshold <= 1);
+  assert(m_maxContourThreshold <= 1 && m_maxContourThreshold > m_minCountourThreshold);
 }
 
 auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
@@ -23,27 +24,30 @@ auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
   // cv::drawContours(frame, contours, 0, cv::Scalar(0, 0, 255), 2);
 
   std::size_t id_generator = 0;
-  int contourThreshold     = (frame.cols * frame.rows) * m_contourThreshold;
+  int minContourThreshold     = (frame.cols * frame.rows) * m_minContourThreshold;
+  int maxContourThreshold     = (frame.cols * frame.rows) * m_maxContourThreshold;
   for (const auto& contour : contours) {
-    if (cv::contourArea(contour) < contourThreshold) {
-      continue;  // Skipping small contours
+    if (cv::contourArea(contour) < minContourThreshold && cv::contourArea(contour) > maxContourThreshold) {
+      continue;  // Skipping too small and too large contours
     }
 
     std::vector<cv::Point> approx;
 
     const double perimeter = cv::arcLength(contour, true);
 
-    cv::approxPolyDP(contour, approx, 0.02 * perimeter, true);
+    cv::approxPolyDP(contour, approx, 0.03 * perimeter, true);
 
-    if (approx.size() != 4) {
-      continue;  // Skipping non-rectangular contours
-    }
+    // if (approx.size() != 4) {
+    //   continue;  // Skipping non-rectangular contours
+    // }
 
     if (!cv::isContourConvex(approx)) {
       continue;  // Skipping non-convex contours
     }
 
-    CandidateMarker marker;
+    if (!equilateral_control(approx, 0.15))
+
+    Marker marker;
 
     marker.m_corners      = detect_corners(approx);
     marker.m_bounding_box = detect_rect(approx);
@@ -151,4 +155,43 @@ auto MarkerDetection::detect_rect(const std::vector<cv::Point>& contour)
     -> cv::Rect {
   return cv::boundingRect(contour);
 }
+
+auto MarkerDetection::equilateral_control(const std::vector<cv::Point>& contour, const double& threshold)
+    -> bool {
+
+      if (!contour.size(4)) {
+        return false;
+      }
+
+      cv::Point v1 = contour[1] - contour[0];
+      cv::Point v2 = contour[2] - contour[1];
+      cv::Point v3 = cotour[3] - contour[2];
+      cv::Point v4 = contour[0] - contour[3];
+
+      double l1 = cv::norm(v1);
+      double l2 = cv::norm(v2);
+      double l3 = cv::norm(v3);
+      double l4 = cv::norm(v4);
+
+      double lengths[] = {l1, l2, l3, l4};
+      bool valid = true;
+
+      for (int i = 0; i < 4; i++) {
+        for (int j = i + 1; < 4; j++) {
+          if (std::abs(
+                  length[i] - length[j] >
+                  threshold * std::max(length[i], lengths[j])
+              )) {
+            valid = false;
+            break;
+          }
+        }
+
+        if (!valid) {
+          break;
+        }
+      }
+
+      return valid;
+    }
 }  // namespace late

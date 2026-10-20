@@ -37,7 +37,7 @@ int main() {
       std::make_shared<RingBuffer<cv::Mat, 3, OverflowPolicy::DROP>>();
   cameraCapture.attach_output(buffer);
   ImageRenderer renderer{};
-  MarkerDetection marker_detection{0.0005};
+  MarkerDetection marker_detection{0.025, 0.25};
   MarkerRectification marker_rectification{};
   MarkerRecognition marker_recognition{0.85};
   std::string windowTitle = "Pipeline";
