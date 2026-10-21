@@ -17,6 +17,7 @@
 #include "MarkerRectification.hpp"
 #include "MarkerRecognition.hpp"
 #include "Marker.hpp"
+#include "DataStorage.hpp"
 #include "RingBuffer.hpp"
 
 int main() {
@@ -27,6 +28,7 @@ int main() {
   using late::MarkerRectification;
   using late::MarkerRecognition;
   using late::Marker;
+  using late::DataStorage;
   using late::OverflowPolicy;
   using late::RingBuffer;
   CameraCapture cameraCapture{};
@@ -40,6 +42,7 @@ int main() {
   MarkerDetection marker_detection{0.025, 0.25};
   MarkerRectification marker_rectification{};
   MarkerRecognition marker_recognition{0.85};
+  DataStorage data_storage{};
   std::string windowTitle = "Pipeline";
 
   int keyPressed = '1';
@@ -73,6 +76,18 @@ int main() {
 
       std::vector<Marker> valid_markers = 
         marker_recognition.GetValidMarkers(rectified_markers);
+
+      for (auto& marker : valid_markers){
+        data_storage.Insert(marker);
+      }
+
+      // For debugging:
+      // for (int i = 0; i < 4; i++){
+      //   if (data_storage.Contains(i)){
+      //     Marker temp = data_storage.GetMarker(i);
+      //     data_storage.RemoveId(i);
+      //   }
+      // }
 
       if (keyPressed == '3')
         cv::imshow(windowTitle, debug_frame);  // Use for debug
