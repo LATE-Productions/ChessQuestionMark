@@ -53,9 +53,9 @@ auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
     CandidateMarker marker;
 
     marker.m_corners      = order_corners(detect_corners(approx));
-    marker.m_bounding_box = detect_rect(approx);
-    marker.markerImage    = frame(marker.m_bounding_box).clone();
-    MarkerPoseEstimator::estimate_pose(marker);
+    marker.m_boundingBox = detect_rect(approx);
+    marker.markerImage    = frame(marker.m_boundingBox).clone();
+    MarkerPoseEstimator::estimate_pose(marker, 825.0f);
     marker.m_markerId = id_generator++;  // Assigning a unique ID to the marker
     marker.m_contours.push_back(contour);
 
@@ -63,7 +63,7 @@ auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
         marker
     );  // May use embarkpush_back(std::move(marker)) for efficiency
 
-    std::cout << "Marker apperent size" << marker.m_apperentSize << std::endln;
+    std::cout << "Marker apperent size" << marker.m_apperentSize << std::endl;
 
     // std::println("Detected marker with corners: ");
     // for (const auto& corner : marker.m_corners) {
@@ -102,8 +102,8 @@ auto MarkerDetection::draw_markers(
     }
 
     cv::Point2f center;
-    center.x = marker.m_corners[0].x + (marker.m_bounding_box.width / 2);
-    center.y = marker.m_corners[0].y + (marker.m_bounding_box.height / 2);
+    center.x = marker.m_corners[0].x + (marker.m_boundingBox.width / 2);
+    center.y = marker.m_corners[0].y + (marker.m_boundingBox.height / 2);
 
     cv::circle(display_frame, center, 5, cv::Scalar(0, 255, 0), -1);
   }
