@@ -1,4 +1,5 @@
 #include "MarkerDetection.hpp"
+#include "MarkerPoseEstimator.hpp"
 
 namespace late {
 
@@ -51,15 +52,18 @@ auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
 
     CandidateMarker marker;
 
-    marker.m_corners      = detect_corners(approx);
+    marker.m_corners      = order_corners(detect_corners(approx));
     marker.m_bounding_box = detect_rect(approx);
     marker.markerImage    = frame(marker.m_bounding_box).clone();
+    MarkerPoseEstimator::estimate_pose(marker);
     marker.m_markerId = id_generator++;  // Assigning a unique ID to the marker
     marker.m_contours.push_back(contour);
 
     markers.push_back(
         marker
     );  // May use embarkpush_back(std::move(marker)) for efficiency
+
+    std::cout << "Marker apperent size" << marker.m_apperentSize << std::endln;
 
     // std::println("Detected marker with corners: ");
     // for (const auto& corner : marker.m_corners) {

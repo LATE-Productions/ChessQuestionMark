@@ -1,5 +1,6 @@
 #pragma once
 #include <opencv2/core.hpp>
+#include <optional>
 
 namespace late {
 
@@ -19,19 +20,25 @@ namespace late {
     };
 
     struct Marker {
-        int m_markerId;
+        std::optional<uint16_t> m_markerId;
+        cv::Vec3f m_markerRotation;
         cv::Point3f m_markerPos;
+        float m_apperentSize;
+        float m_estimatedDistance;
         cv::Mat markerImage;
     };
 
     class CandidateMarker {
 
         public:
-
             std::array<cv::Point2f, 4> m_corners;
             std::vector<std::vector<cv::Point>> m_contours;
-            cv::Rect m_bounding_box;
+            cv::Rect m_boundingBox;
             cv::Mat markerImage;
+            cv::Vec3f m_markerRotation;
+            cv::Point3f m_markerPos;
+            float m_apperentSize;
+            float m_estimatedDistance;
             std::size_t m_markerId;
             std::size_t m_markerTemplateId;
     };
