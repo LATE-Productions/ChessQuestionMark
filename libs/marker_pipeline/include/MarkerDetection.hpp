@@ -11,8 +11,9 @@ class MarkerDetection {
   MarkerDetection(double minContourThreshold, double maxContourThreshold);
 
   auto detect_candidate_markers(cv::Mat& frame) -> std::vector<CandidateMarker>;
-  auto draw_markers(const cv::Mat& frame, const std::vector<CandidateMarker> markers)
-      -> cv::Mat;
+  auto draw_markers(
+      const cv::Mat& frame, const std::vector<CandidateMarker> markers
+  ) -> cv::Mat;
 
  protected:
  private:
@@ -21,7 +22,9 @@ class MarkerDetection {
   auto order_corners(const std::array<cv::Point2f, 4>& corners)
       -> std::array<cv::Point2f, 4>;
   auto detect_rect(const std::vector<cv::Point>& contour) -> cv::Rect;
-  auto equilateral_control(const std::vector<cv::Point>& contour, const double& threshold) -> bool;
+  auto equilateral_control(
+      const std::vector<cv::Point>& contour, const double& threshold
+  ) -> bool;
 
  private:
   double m_minContourThreshold;

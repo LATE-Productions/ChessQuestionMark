@@ -86,7 +86,7 @@ auto MarkerRecognition::DecodeMarker(const CandidateMarker& candidateMarker, Mar
     int rotation = 0;
     for (const cv::Mat& candidate: markerRotations){ 
       int distance = HammingDistance(candidate, candidateMarker.markerImage);
-      std::cout << "Hamming distance: " << distance << " of " << candidate.cols * candidate.rows  << " pixels" << std::endl;
+      //std::cout << "Hamming distance: " << distance << " of " << candidate.cols * candidate.rows  << " pixels" << std::endl;
 
       if (distance >= 0 && distance < bestDistance){
         secondDistance = bestDistance;
@@ -113,7 +113,10 @@ auto MarkerRecognition::DecodeMarker(const CandidateMarker& candidateMarker, Mar
   }
 
   destination.m_markerId = bestId;
-  destination.m_markerPos = GetCenter(candidateMarker);
+  //destination.m_markerPos = GetCenter(candidateMarker);
+  destination.m_markerPos = candidateMarker.m_markerPos;
+  destination.m_markerRotation = candidateMarker.m_markerRotation;
+  destination.m_apperentSize = candidateMarker.m_apperentSize;
   destination.markerImage = candidateMarker.markerImage;
 
   return true;
