@@ -1,12 +1,19 @@
 #include "MarkerDetection.hpp"
+
 #include "MarkerPoseEstimator.hpp"
 
 namespace late {
 
-MarkerDetection::MarkerDetection(double minContourThreshold, double maxContourThreshold)
-    : m_minContourThreshold(minContourThreshold * minContourThreshold), m_maxContourThreshold(maxContourThreshold * maxContourThreshold) {
+MarkerDetection::MarkerDetection(
+    double minContourThreshold, double maxContourThreshold
+)
+    : m_minContourThreshold(minContourThreshold * minContourThreshold),
+      m_maxContourThreshold(maxContourThreshold * maxContourThreshold) {
   assert(m_minContourThreshold <= 1);
-  assert(m_maxContourThreshold <= 1 && m_maxContourThreshold > m_minContourThreshold);
+  assert(
+      m_maxContourThreshold <= 1 &&
+      m_maxContourThreshold > m_minContourThreshold
+  );
 }
 
 auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
@@ -25,10 +32,11 @@ auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
   // cv::drawContours(frame, contours, 0, cv::Scalar(0, 0, 255), 2);
 
   std::size_t id_generator = 0;
-  int minContourThreshold     = (frame.cols * frame.rows) * m_minContourThreshold;
-  int maxContourThreshold     = (frame.cols * frame.rows) * m_maxContourThreshold;
+  int minContourThreshold  = (frame.cols * frame.rows) * m_minContourThreshold;
+  int maxContourThreshold  = (frame.cols * frame.rows) * m_maxContourThreshold;
   for (const auto& contour : contours) {
-    if (cv::contourArea(contour) < minContourThreshold || cv::contourArea(contour) > maxContourThreshold) {
+    if (cv::contourArea(contour) < minContourThreshold ||
+        cv::contourArea(contour) > maxContourThreshold) {
       continue;  // Skipping too small and too large contours
     }
 
@@ -52,10 +60,10 @@ auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
 
     CandidateMarker marker;
 
-    marker.m_corners      = order_corners(detect_corners(approx));
+    marker.m_corners     = order_corners(detect_corners(approx));
     marker.m_boundingBox = detect_rect(approx);
-    marker.markerImage    = frame(marker.m_boundingBox).clone();
-    MarkerPoseEstimator::estimate_pose(marker, 825.0f);
+    marker.markerImage   = frame(marker.m_boundingBox).clone();
+    MarkerPoseEstimator::estimate_pose(marker, frame.size(), 825.0f);
     marker.m_markerId = id_generator++;  // Assigning a unique ID to the marker
     marker.m_contours.push_back(contour);
 
@@ -162,42 +170,40 @@ auto MarkerDetection::detect_rect(const std::vector<cv::Point>& contour)
   return cv::boundingRect(contour);
 }
 
-auto MarkerDetection::equilateral_control(const std::vector<cv::Point>& contour, const double& threshold)
-    -> bool {
+auto MarkerDetection::equilateral_control(
+    const std::vector<cv::Point>& contour, const double& threshold
+) -> bool {
+  if (contour.size() != 4) {
+    return false;
+  }
 
-      if (contour.size() != 4) {
-        return false;
+  cv::Point v1 = contour[1] - contour[0];
+  cv::Point v2 = contour[2] - contour[1];
+  cv::Point v3 = contour[3] - contour[2];
+  cv::Point v4 = contour[0] - contour[3];
+
+  double l1 = cv::norm(v1);
+  double l2 = cv::norm(v2);
+  double l3 = cv::norm(v3);
+  double l4 = cv::norm(v4);
+
+  double lengths[] = {l1, l2, l3, l4};
+  bool valid       = true;
+
+  for (int i = 0; i < 4; i++) {
+    for (int j = i + 1; j < 4; j++) {
+      if (std::abs(lengths[i] - lengths[j]) >
+          threshold * std::max(lengths[i], lengths[j])) {
+        valid = false;
+        break;
       }
-
-      cv::Point v1 = contour[1] - contour[0];
-      cv::Point v2 = contour[2] - contour[1];
-      cv::Point v3 = contour[3] - contour[2];
-      cv::Point v4 = contour[0] - contour[3];
-
-      double l1 = cv::norm(v1);
-      double l2 = cv::norm(v2);
-      double l3 = cv::norm(v3);
-      double l4 = cv::norm(v4);
-
-      double lengths[] = {l1, l2, l3, l4};
-      bool valid = true;
-
-      for (int i = 0; i < 4; i++) {
-        for (int j = i + 1; j < 4; j++) {
-          if (std::abs(
-                  lengths[i] - lengths[j] >
-                  threshold * std::max(lengths[i], lengths[j])
-              )) {
-            valid = false;
-            break;
-          }
-        }
-
-        if (!valid) {
-          break;
-        }
-      }
-
-      return valid;
     }
+
+    if (!valid) {
+      break;
+    }
+  }
+
+  return valid;
+}
 }  // namespace late
