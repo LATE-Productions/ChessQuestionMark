@@ -156,8 +156,8 @@ auto MarkerRecognition::RotateMat(const cv::Mat& mat, int k) -> cv::Mat{
 
 auto MarkerRecognition::GetCenter(const CandidateMarker& candidateMarker) -> cv::Point3f{
   cv::Point3f center;
-  center.x = candidateMarker.m_corners[0].x + ((double)candidateMarker.m_bounding_box.width / 2);
-  center.y = candidateMarker.m_corners[0].y + ((double)candidateMarker.m_bounding_box.height / 2);
+  center.x = candidateMarker.m_corners[0].x + ((double)candidateMarker.m_boundingBox.width / 2);
+  center.y = candidateMarker.m_corners[0].y + ((double)candidateMarker.m_boundingBox.height / 2);
   center.z = 0;
   return center;
 };

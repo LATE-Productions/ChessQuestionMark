@@ -82,9 +82,9 @@ int main() {
         for (auto& rect : candidate_markers) {
           cv::Point2f center;
           center.x =
-          ((float)rect.m_bounding_box.width / 2);
+          ((float)rect.m_boundingBox.width / 2);
           center.y =
-          ((float)rect.m_bounding_box.height / 2);
+          ((float)rect.m_boundingBox.height / 2);
     
           cv::circle(rect.markerImage, center, 5, cv::Scalar(0, 0, 255), -1);
           auto rectWinName = std::format("rect {}", rect.m_markerId);

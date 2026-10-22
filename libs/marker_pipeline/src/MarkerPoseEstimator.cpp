@@ -35,7 +35,7 @@ auto MarkerPoseEstimator::estimate_pose(
   candidate.m_apperentSize = totalLength / 4.0f;
 
   if (focalLengthPx > 0.0f && candidate.m_apperentSize > 0.0f) {
-    candidate.m_estimateDistance =
+    candidate.m_estimatedDistance =
         (focalLengthPx * markerSize) / candidate.m_apperentSize;
   }
 };

@@ -20,7 +20,7 @@ namespace late {
     };
 
     struct Marker {
-        std::optional<uint16_t> m_markerId;
+        int m_markerId;
         cv::Vec3f m_markerRotation;
         cv::Point3f m_markerPos;
         float m_apperentSize;
