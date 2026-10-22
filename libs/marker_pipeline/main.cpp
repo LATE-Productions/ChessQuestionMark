@@ -42,7 +42,7 @@ int main() {
   MarkerDetection marker_detection{0.025, 0.25};
   MarkerRectification marker_rectification{};
   MarkerRecognition marker_recognition{0.85};
-  DataStorage data_storage{};
+  DataStorage data_storage{100.0f};
   std::string windowTitle = "Pipeline";
 
   int keyPressed = '1';
@@ -77,17 +77,13 @@ int main() {
       std::vector<Marker> valid_markers = 
         marker_recognition.GetValidMarkers(rectified_markers);
 
+      //std::cout << "Inserting " << valid_markers.size() << " to storage" << std::endl;
       for (auto& marker : valid_markers){
         data_storage.Insert(marker);
       }
 
-      // For debugging:
-      // for (int i = 0; i < 4; i++){
-      //   if (data_storage.Contains(i)){
-      //     Marker temp = data_storage.GetMarker(i);
-      //     data_storage.RemoveId(i);
-      //   }
-      // }
+      const auto storedMarkers = data_storage.GetAllMarkers();
+      std::cout << "Recieved " << storedMarkers.size() << " markers" << std::endl;
 
       if (keyPressed == '3')
         cv::imshow(windowTitle, debug_frame);  // Use for debug
@@ -127,7 +123,7 @@ int main() {
         cv::imshow(windowTitle, shared_frame);
 
         for (int i = 0; i < valid_markers.size(); i++){
-          std::string rectWinName = std::format("id: {}", valid_markers[i].m_markerId);
+          std::string rectWinName = std::format("id: {}", valid_markers[i].m_markerTypeId);
           cv::imshow(rectWinName, valid_markers[i].markerImage);  // Use for debug
           
           open_windows.push_back(rectWinName);
