@@ -21,8 +21,7 @@ struct Marker {
   cv::Mat markerImage;
 };
 
-class CandidateMarker {
- public:
+struct CandidateMarker {
   std::array<cv::Point2f, 4> m_corners;
   std::vector<std::vector<cv::Point>> m_contours;
   cv::Rect m_boundingBox;
