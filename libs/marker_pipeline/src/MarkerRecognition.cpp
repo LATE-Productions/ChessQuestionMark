@@ -54,7 +54,7 @@ auto MarkerRecognition::GetValidMarkers(const std::vector<CandidateMarker>& mark
   if(validMarkers.size() > 0){
     std::cout << "valid markers found: " << validMarkers.size() << std::endl;
     for (const auto& validMarker : validMarkers){
-      std::cout << "Valid marker ID: " << validMarker.m_markerId << std::endl;
+      std::cout << "Valid marker ID: " << validMarker.m_markerTypeId << std::endl;
     }
   }
   else{
@@ -112,8 +112,7 @@ auto MarkerRecognition::DecodeMarker(const CandidateMarker& candidateMarker, Mar
     return false;
   }
 
-  destination.m_markerId = bestId;
-  //destination.m_markerPos = GetCenter(candidateMarker);
+  destination.m_markerTypeId = bestId;
   destination.m_markerPos = candidateMarker.m_markerPos;
   destination.m_markerRotation = candidateMarker.m_markerRotation;
   destination.m_apperentSize = candidateMarker.m_apperentSize;

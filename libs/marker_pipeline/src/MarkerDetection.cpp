@@ -91,27 +91,27 @@ auto MarkerDetection::draw_markers(
 
   cv::Mat contour_input = frame.clone();
 
+  
   for (const auto& marker : markers) {
+    cv::Point center;
+
     cv::drawContours(
         display_frame, marker.m_contours, -1, cv::Scalar(0, 255, 0), 2
     );
 
-    for (size_t i = 0; i < marker.m_corners.size(); ++i) {
-      cv::Point corner(
-          cvRound(marker.m_corners[i].x), cvRound(marker.m_corners[i].y)
-      );
-
+    for (size_t i = 0; i < marker.m_corners.size(); i++){
+      cv::Point corner = marker.m_corners[i];
       cv::circle(display_frame, corner, 5, cv::Scalar(0, 0, 255), -1);
 
       cv::putText(
-          display_frame, std::to_string(i), corner + cv::Point(5, -5),
-          cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 0, 0), 1
+        display_frame, std::to_string(i), corner + cv::Point(5, -5),
+        cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 0, 0), 1
       );
+
+      center += corner;
     }
 
-    cv::Point2f center;
-    center.x = marker.m_corners[0].x + (marker.m_boundingBox.width / 2);
-    center.y = marker.m_corners[0].y + (marker.m_boundingBox.height / 2);
+    center = center * 0.25f;
 
     cv::circle(display_frame, center, 5, cv::Scalar(0, 255, 0), -1);
   }
