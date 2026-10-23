@@ -28,7 +28,7 @@ auto DataStorage::GetAllMarkers() -> std::vector<Marker>{
     return markers;
 };
 
-auto DataStorage::RemoveMarker(const Marker& marker){
+auto DataStorage::RemoveMarker(const Marker& marker) -> void{
     m_storedMarkers.erase(marker.m_instanceId);
 };
 
