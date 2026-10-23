@@ -41,4 +41,10 @@ namespace late {
       std::size_t m_markerId;
       std::size_t m_markerTemplateId;
     };
+
+    struct GodotMarker {
+        int m_id;
+        float m_posX, m_posY, m_posZ;
+        float m_rotX, m_rotY, m_rotZ;
+    };
 }
