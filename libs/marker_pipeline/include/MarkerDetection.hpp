@@ -1,19 +1,24 @@
 #pragma once
 
+#include <opencv2/core/mat.hpp>
 #include <opencv2/opencv.hpp>
+#include <vector>
 
 #include "Marker.hpp"
+#include "pipeline/Components.hpp"
 
 namespace late {
 
-class MarkerDetection {
+class MarkerDetection : public pipeline::IStage<cv::Mat, CandidatePayload> {
  public:
   MarkerDetection(double minContourThreshold, double maxContourThreshold);
 
   auto detect_candidate_markers(cv::Mat& frame) -> std::vector<CandidateMarker>;
-  auto draw_markers(
+  static auto draw_markers(
       const cv::Mat& frame, const std::vector<CandidateMarker> markers
   ) -> cv::Mat;
+
+  auto process(cv::Mat&& frame) -> CandidatePayload override;
 
  protected:
  private:

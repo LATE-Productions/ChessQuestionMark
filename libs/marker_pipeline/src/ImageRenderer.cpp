@@ -28,4 +28,9 @@ auto ImageRenderer::deNoise(cv::Mat& frame) -> void {
       frame, frame, cv::MORPH_CLOSE, kernel
   );  // Closing removes black pixles in a group of white pixels
 };
+
+auto ImageRenderer::process(cv::Mat&& data) -> cv::Mat {
+  getBlackWhiteImage(data);
+  return data;
+};
 }  // namespace late
