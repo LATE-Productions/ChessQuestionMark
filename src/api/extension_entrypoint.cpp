@@ -20,6 +20,7 @@ void initialize_gdextension_types(godot::ModuleInitializationLevel level) {
   GDREGISTER_CLASS(Main);
   GDREGISTER_CLASS(VideoSource);
   GDREGISTER_CLASS(FrameSource);
+  GDREGISTER_CLASS(MarkerManager);
 
 #if 0
 	
