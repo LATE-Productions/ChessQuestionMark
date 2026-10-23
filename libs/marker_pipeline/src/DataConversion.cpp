@@ -12,7 +12,8 @@ auto DataConversion::convert_to_markers(const std::vector<Marker>& markers) -> s
 auto DataConversion::convert_marker(const Marker& marker) -> GodotMarker{
     GodotMarker output;
     
-    output.m_id = marker.m_markerTypeId;
+    output.m_typeId = marker.m_markerTypeId;
+    output.m_instanceId = marker.m_instanceId;
     output.m_posX = marker.m_markerPos.x;
     output.m_posY = -marker.m_markerPos.y;
     output.m_posZ = -marker.m_markerPos.z;

@@ -43,7 +43,8 @@ namespace late {
     };
 
     struct GodotMarker {
-        int m_id;
+        int m_typeId;
+        int m_instanceId;
         float m_posX, m_posY, m_posZ;
         float m_rotX, m_rotY, m_rotZ;
     };

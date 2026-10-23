@@ -29,3 +29,7 @@ environment = SubResource("Environment_y32ns")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.55732495, 0, 0.8302945, -0.52040124, 0.7792067, 0.3493129, -0.64697105, -0.62676704, 0.43427134, 5.575678, 2.381495, -1.2785977)
+
+[node name="MarkerManager" type="Node" parent="."]
+
+[node name="MarkerVisual" type="Node3D" parent="."]
