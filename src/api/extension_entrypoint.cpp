@@ -10,6 +10,8 @@
 
 #include "main.hpp"
 #include "nodes/FrameSource.hpp"
+#include "nodes/MarkerManager.hpp"
+#include "objects/MarkerContainer.hpp"
 #include "singletons/VideoSource.hpp"
 
 namespace chess {
@@ -17,19 +19,17 @@ void initialize_gdextension_types(godot::ModuleInitializationLevel level) {
   if (level != godot::MODULE_INITIALIZATION_LEVEL_SCENE) {
     return;
   }
-  GDREGISTER_CLASS(Main);
   GDREGISTER_CLASS(VideoSource);
   GDREGISTER_CLASS(FrameSource);
+  GDREGISTER_CLASS(MarkerContainer);
   GDREGISTER_CLASS(MarkerManager);
 
-#if 0
-	
-0  if (godot::Engine::get_singleton()->is_editor_hint()) {
+  if (godot::Engine::get_singleton()->is_editor_hint()) {
     return;
   }
-  godot::Engine::get_singleton()->register_singleton("VideoSource",
-                                                     memnew(VideoSource));
-#endif
+  godot::Engine::get_singleton()->register_singleton(
+      "VideoSource", memnew(VideoSource)
+  );
 }
 
 void uninitialize_gdextension_types(godot::ModuleInitializationLevel level) {
@@ -37,7 +37,6 @@ void uninitialize_gdextension_types(godot::ModuleInitializationLevel level) {
     return;
   }
 
-#if 0
   if (godot::Engine::get_singleton()->is_editor_hint()) {
     return;
   }
@@ -46,7 +45,6 @@ void uninitialize_gdextension_types(godot::ModuleInitializationLevel level) {
 
   godot::Engine::get_singleton()->unregister_singleton("VideoSource");
   if (singleton) memdelete(singleton);
-#endif
 }
 
 extern "C" {
