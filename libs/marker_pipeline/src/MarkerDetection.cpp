@@ -1,5 +1,6 @@
 #include "MarkerDetection.hpp"
 
+#include "Marker.hpp"
 #include "MarkerPoseEstimator.hpp"
 
 namespace late {
@@ -71,7 +72,8 @@ auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
         marker
     );  // May use embarkpush_back(std::move(marker)) for efficiency
 
-    std::cout << "Marker apperent size" << marker.m_apperentSize << std::endl;
+    // std::cout << "Marker apperent size" << marker.m_apperentSize <<
+    // std::endl;
 
     // std::println("Detected marker with corners: ");
     // for (const auto& corner : marker.m_corners) {
@@ -91,7 +93,6 @@ auto MarkerDetection::draw_markers(
 
   cv::Mat contour_input = frame.clone();
 
-  
   for (const auto& marker : markers) {
     cv::Point center;
 
@@ -99,13 +100,13 @@ auto MarkerDetection::draw_markers(
         display_frame, marker.m_contours, -1, cv::Scalar(0, 255, 0), 2
     );
 
-    for (size_t i = 0; i < marker.m_corners.size(); i++){
+    for (size_t i = 0; i < marker.m_corners.size(); i++) {
       cv::Point corner = marker.m_corners[i];
       cv::circle(display_frame, corner, 5, cv::Scalar(0, 0, 255), -1);
 
       cv::putText(
-        display_frame, std::to_string(i), corner + cv::Point(5, -5),
-        cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 0, 0), 1
+          display_frame, std::to_string(i), corner + cv::Point(5, -5),
+          cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 0, 0), 1
       );
 
       center += corner;
@@ -205,5 +206,10 @@ auto MarkerDetection::equilateral_control(
   }
 
   return valid;
+}
+
+auto MarkerDetection::process(cv::Mat&& frame) -> CandidatePayload {
+  auto candidates = detect_candidate_markers(frame);
+  return {frame.clone(), candidates};
 }
 }  // namespace late

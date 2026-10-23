@@ -38,4 +38,10 @@ auto MarkerRectification::rectify_markerImage(
 
   return rectified_image;
 }
+
+auto MarkerRectification::process(CandidatePayload&& payload)
+    -> CandidatePayload {
+  payload.m_markers = rectify_markers(payload.m_frame, payload.m_markers);
+  return payload;
+}
 }  // namespace late
