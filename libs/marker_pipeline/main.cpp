@@ -78,32 +78,32 @@ int main() {
                 center.y = ((float)rect.m_boundingBox.height / 2);
 
                 cv::circle(
-                    rect.markerImage, center, 5, cv::Scalar(0, 0, 255), -1
+                    rect.m_markerImage, center, 5, cv::Scalar(0, 0, 255), -1
                 );
                 auto rectWinName = std::format("rect {}", rect.m_markerId);
-                cv::imshow(rectWinName, rect.markerImage);  // Use for debug
+                cv::imshow(rectWinName, rect.m_markerImage);  // Use for debug
 
                 open_windows.push_back(rectWinName);
                 std::erase(last_open_windows, rectWinName);
               }
             }
           })
-          .on_output<MarkerRectification>(
-              [&keyPressed, &windowTitle, &open_windows,
-               &last_open_windows](const late::CandidatePayload& data) {
-                if (keyPressed == '5') {
-                  cv::imshow(windowTitle, data.m_frame);
-                  for (auto& rect : data.m_markers) {
-                    std::string rectWinName =
-                        std::format("rect {}", rect.m_markerId);
-                    cv::imshow(rectWinName, rect.markerImage);  // Use for debug
+          .on_output<MarkerRectification>([&keyPressed, &windowTitle,
+                                           &open_windows, &last_open_windows](
+                                              const late::CandidatePayload& data
+                                          ) {
+            if (keyPressed == '5') {
+              cv::imshow(windowTitle, data.m_frame);
+              for (auto& rect : data.m_markers) {
+                std::string rectWinName =
+                    std::format("rect {}", rect.m_markerId);
+                cv::imshow(rectWinName, rect.m_markerImage);  // Use for debug
 
-                    open_windows.push_back(rectWinName);
-                    std::erase(last_open_windows, rectWinName);
-                  }
-                }
+                open_windows.push_back(rectWinName);
+                std::erase(last_open_windows, rectWinName);
               }
-          )
+            }
+          })
           .on_output<MarkerRecognition>(
               [&keyPressed, &windowTitle, &open_windows,
                &last_open_windows](const late::FinalPayload& data) {
@@ -115,7 +115,7 @@ int main() {
                     std::string rectWinName =
                         std::format("id: {}", valid_markers[i].m_markerTypeId);
                     cv::imshow(
-                        rectWinName, valid_markers[i].markerImage
+                        rectWinName, valid_markers[i].m_markerImage
                     );  // Use for debug
 
                     open_windows.push_back(rectWinName);

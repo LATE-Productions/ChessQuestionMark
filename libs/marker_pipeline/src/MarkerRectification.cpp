@@ -11,7 +11,7 @@ auto MarkerRectification::rectify_markers(
     const cv::Mat& frame, std::vector<CandidateMarker>& markers
 ) -> std::vector<CandidateMarker> {
   for (auto& marker : markers) {
-    marker.markerImage = rectify_markerImage(frame, marker);
+    marker.m_markerImage = rectify_markerImage(frame, marker);
   }
   return markers;
 }
@@ -19,8 +19,8 @@ auto MarkerRectification::rectify_markers(
 auto MarkerRectification::rectify_markerImage(
     const cv::Mat& frame, const CandidateMarker& marker
 ) -> cv::Mat {
-  int rows                               = marker.markerImage.rows - 1;
-  int cols                               = marker.markerImage.cols - 1;
+  int rows                               = marker.m_markerImage.rows - 1;
+  int cols                               = marker.m_markerImage.cols - 1;
   int destSize                           = std::max(rows, cols);
   std::array<cv::Point2f, 4> dst_corners = {
       cv::Point2f(0, 0), cv::Point2f(destSize, 0),

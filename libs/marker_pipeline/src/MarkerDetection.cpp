@@ -63,7 +63,7 @@ auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
 
     marker.m_corners     = order_corners(detect_corners(approx));
     marker.m_boundingBox = detect_rect(approx);
-    marker.markerImage   = frame(marker.m_boundingBox).clone();
+    marker.m_markerImage = frame(marker.m_boundingBox).clone();
     MarkerPoseEstimator::estimate_pose(marker, frame.size(), 825.0f);
     marker.m_markerId = id_generator++;  // Assigning a unique ID to the marker
     marker.m_contours.push_back(contour);

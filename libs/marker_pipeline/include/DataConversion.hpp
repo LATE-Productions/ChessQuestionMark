@@ -1,15 +1,21 @@
 #pragma once
 
-#include "Marker.hpp"
-
 #include <opencv2/opencv.hpp>
+#include <vector>
 
-namespace late{
-class DataConversion{
-    public:
-    auto convert_to_markers(const std::vector<Marker>& markers) -> std::vector<GodotMarker>;
+#include "Marker.hpp"
+#include "pipeline/Components.hpp"
 
-    private:
-    auto convert_marker(const Marker& marker) -> GodotMarker;
+namespace late {
+class DataConversion
+    : public pipeline::IStage<std::vector<Marker>, std::vector<GodotMarker>> {
+ public:
+  auto convert_to_markers(const std::vector<Marker>& markers)
+      -> std::vector<GodotMarker>;
+
+  auto process(std::vector<Marker>&& payload) -> std::vector<GodotMarker>;
+
+ private:
+  auto convert_marker(const Marker& marker) -> GodotMarker;
 };
 }  // namespace late

@@ -35,12 +35,12 @@ auto MarkerRecognition::GetValidMarkers(
 ) -> std::vector<Marker> {
   std::vector<Marker> validMarkers{};
   for (const auto& marker : markers) {
-    if (marker.markerImage.cols - marker.markerImage.rows !=
+    if (marker.m_markerImage.cols - marker.m_markerImage.rows !=
         0) {  // Ignore non-square markers
       continue;
     }
 
-    if (marker.markerImage.cols < 8) continue;
+    if (marker.m_markerImage.cols < 8) continue;
 
     Marker validMarker;
     if (DecodeMarker(marker, validMarker)) {
@@ -73,25 +73,26 @@ auto MarkerRecognition::DecodeMarker(
 
     std::array<cv::Mat, 4> markerRotations = {
         referenceMarker(
-            candidateMarker.markerImage.cols, MarkerTemplate<6>::Rotation::NONE
+            candidateMarker.m_markerImage.cols,
+            MarkerTemplate<6>::Rotation::NONE
         ),
         referenceMarker(
-            candidateMarker.markerImage.cols,
+            candidateMarker.m_markerImage.cols,
             MarkerTemplate<6>::Rotation::ROTATE_90
         ),
         referenceMarker(
-            candidateMarker.markerImage.cols,
+            candidateMarker.m_markerImage.cols,
             MarkerTemplate<6>::Rotation::ROTATE_180
         ),
         referenceMarker(
-            candidateMarker.markerImage.cols,
+            candidateMarker.m_markerImage.cols,
             MarkerTemplate<6>::Rotation::ROTATE_270
         ),
     };
 
     int rotation = 0;
     for (const cv::Mat& candidate : markerRotations) {
-      int distance = HammingDistance(candidate, candidateMarker.markerImage);
+      int distance = HammingDistance(candidate, candidateMarker.m_markerImage);
       // std::cout << "Hamming distance: " << distance << " of " <<
       // candidate.cols * candidate.rows  << " pixels" << std::endl;
 
@@ -107,10 +108,10 @@ auto MarkerRecognition::DecodeMarker(
     }
   }
 
-  int maxErrors =
-      (candidateMarker.markerImage.cols * candidateMarker.markerImage.rows) *
-      (1 - m_markerMatchPercentage);
-  double dist = maxErrors / static_cast<double>(bestDistance);
+  int maxErrors = (candidateMarker.m_markerImage.cols *
+                   candidateMarker.m_markerImage.rows) *
+                  (1 - m_markerMatchPercentage);
+  double dist   = maxErrors / static_cast<double>(bestDistance);
   // std::cout << "Max errors: " << maxErrors << " with " << bestDistance << "
   // errors dist: " << dist << std::endl;
   if (bestDistance < 0 || bestDistance > maxErrors) {
@@ -126,7 +127,7 @@ auto MarkerRecognition::DecodeMarker(
   destination.m_markerPos      = candidateMarker.m_markerPos;
   destination.m_markerRotation = candidateMarker.m_markerRotation;
   destination.m_apperentSize   = candidateMarker.m_apperentSize;
-  destination.markerImage      = candidateMarker.markerImage;
+  destination.m_markerImage    = candidateMarker.m_markerImage;
 
   return true;
 };
