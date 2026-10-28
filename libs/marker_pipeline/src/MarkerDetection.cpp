@@ -62,6 +62,8 @@ auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
     CandidateMarker marker;
 
     marker.m_corners     = order_corners(detect_corners(approx));
+    cv::cornerSubPix(gray, marker.m_corners, cv::Size(5, 5), cv::Size(-1, -1), cv::TermCriteria(cv::TermCriteria::EPS | cv::TermCriteria::COUNT, 30, 0.01));
+    
     marker.m_boundingBox = detect_rect(approx);
     marker.m_markerImage = frame(marker.m_boundingBox).clone();
     MarkerPoseEstimator::estimate_pose(marker, frame.size(), 825.0f);
