@@ -55,9 +55,9 @@ auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
       continue;  // Skipping non-convex contours
     }
 
-    if (!equilateral_control(approx, 0.50)) {
-      continue;
-    }
+    // if (!equilateral_control(approx, 0.10)) {
+    //   continue;
+    // }
 
     CandidateMarker marker;
 
