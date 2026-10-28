@@ -16,8 +16,7 @@
 
 namespace chess {
 using late::OverflowPolicy;
-using PiplineSourceBuffer =
-    late::RingBuffer<cv::Mat, 4, OverflowPolicy::OVERWRITE>;
+using PiplineSourceBuffer = late::RingBuffer<cv::Mat, 4, OverflowPolicy::DROP>;
 
 class MarkerManager : public godot::Node3D {
   GDCLASS(MarkerManager, godot::Node3D)
@@ -26,7 +25,6 @@ class MarkerManager : public godot::Node3D {
   auto _ready() -> void override;
   auto _exit_tree() -> void override;
   auto _process(double delta) -> void override;
-  auto update_all_markers(godot::Ref<MarkerContainer> markers) -> void;
   auto update_marker(int id, godot::Vector3 position, godot::Vector3 rotation)
       -> void;
 
@@ -49,7 +47,8 @@ class MarkerManager : public godot::Node3D {
   std::map<int, godot::Vector3> m_targetPositions;
 
   std::jthread m_worker;
-  godot::Callable m_updateAllMarkers;
+  std::mutex m_mtx{};
+  std::optional<std::vector<late::GodotMarker>> m_output;
 
   std::shared_ptr<PiplineSourceBuffer> m_buffer =
       std::make_shared<PiplineSourceBuffer>();
