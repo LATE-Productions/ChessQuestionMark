@@ -1,9 +1,12 @@
 #include "ImageRenderer.hpp"
 
+#include <cstdint>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/opencv.hpp>
 
 namespace late {
+ImageRenderer::ImageRenderer(uint8_t threshold) : m_threshold(threshold) {}
+ImageRenderer::ImageRenderer() : m_threshold(127) {}
 
 auto ImageRenderer::getBlackWhiteImage(cv::Mat& frame) -> void {
   // this->deNoise(frame);
@@ -11,7 +14,7 @@ auto ImageRenderer::getBlackWhiteImage(cv::Mat& frame) -> void {
   cv::cvtColor(frame, frame, cv::COLOR_BGR2GRAY);
 
   cv::threshold(
-      frame, frame, 127, 255, cv::THRESH_BINARY
+      frame, frame, m_threshold, 255, cv::THRESH_BINARY
   );  // Threshoold may need to be changed for better resaults
 };
 
