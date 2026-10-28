@@ -48,7 +48,7 @@ int main() {
   std::vector<std::string> open_windows{};
   auto pipeline =
       late::pipeline::make_pipeline<cv::Mat>()
-          .attach<ImageRenderer>()
+          .attach<ImageRenderer>(115)
           .attach<MarkerDetection>(0.025, 0.25)
           .attach<MarkerRectification>()
           .attach<MarkerRecognition>(0.85)
