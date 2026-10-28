@@ -17,7 +17,7 @@
 namespace chess {
 using late::OverflowPolicy;
 using PiplineSourceBuffer =
-    late::RingBuffer<cv::Mat, 4, OverflowPolicy::OVERWRITE>;
+    late::RingBuffer<cv::Mat, 4, OverflowPolicy::DROP>;
 
 class MarkerManager : public godot::Node3D {
   GDCLASS(MarkerManager, godot::Node3D)
