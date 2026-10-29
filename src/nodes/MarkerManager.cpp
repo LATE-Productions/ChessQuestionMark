@@ -18,6 +18,8 @@
 #include <optional>
 #include <thread>
 #include <vector>
+#include <format>
+#include <filesystem>
 
 #include "DataConversion.hpp"
 #include "DataStorage.hpp"
@@ -25,11 +27,23 @@
 #include "MarkerDetection.hpp"
 #include "MarkerRecognition.hpp"
 #include "MarkerRectification.hpp"
+#include "MarkerPoseEstimator.hpp"
 #include "pipeline/Components.hpp"
 
 namespace chess {
+
 auto MarkerManager::_ready() -> void {
   if (godot::Engine::get_singleton()->is_editor_hint()) {
+    return;
+  }
+
+  if (!late::MarkerPoseEstimator::load_calibration("..\\libs\\marker_pipeline\\camera_calibration\\camera_calibration.yaml")) {
+    auto path = std::filesystem::absolute("data.txt\n\n\n");
+
+    godot::UtilityFunctions::print(
+      godot::String(path.c_str())
+  );
+    
     return;
   }
 
@@ -44,7 +58,7 @@ auto MarkerManager::_ready() -> void {
                         .attach<late::ImageRenderer>(113)
                         .attach<late::MarkerDetection>(0.025, 0.25)
                         .attach<late::MarkerRectification>()
-                        .attach<late::MarkerRecognition>(0.85)
+                        .attach<late::MarkerRecognition>(0.775)
                         .attach<late::DataStorage>(100.0f)
                         .attach<late::DataConversion>();
 

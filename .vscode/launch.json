@@ -1,7 +1,18 @@
 
 {
-  "version": "0.2.0",
+  "version": "0.2.0", 
   "configurations": [
+    {
+      "name": "Run EXE",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/bin/Debug/marker_pipeline.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [],
+      "console": "integratedTerminal"
+  },
     {
       "name": "Attach to Godot (GDExtension)",
       "type": "cppvsdbg",
