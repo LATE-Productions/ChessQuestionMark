@@ -154,7 +154,6 @@ auto MarkerManager::update_marker(
   );
   marker_node->set_position(new_pos);
   marker_node->set_rotation(rotation);
-  godot::UtilityFunctions::print("Marker pos: ", position);
 };
 auto MarkerManager::get_scale2d() const -> double { return m_scale2d; }
 auto MarkerManager::set_scale2d(double scale) -> void { m_scale2d = scale; }
