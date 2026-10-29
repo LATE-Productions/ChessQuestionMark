@@ -60,7 +60,9 @@ auto MarkerManager::_ready() -> void {
   });
 };
 
-auto MarkerManager::_exit_tree() -> void {}
+auto MarkerManager::_exit_tree() -> void {
+  m_worker.request_stop();
+}
 auto MarkerManager::_process(double delta) -> void {
   std::optional<std::vector<late::GodotMarker>> data;
   {
