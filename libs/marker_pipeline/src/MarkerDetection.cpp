@@ -1,11 +1,11 @@
 #include "MarkerDetection.hpp"
 
-#include "Marker.hpp"
-#include "MarkerPoseEstimator.hpp"
-
 #include <algorithm>
 #include <array>
 #include <cmath>
+
+#include "Marker.hpp"
+#include "MarkerPoseEstimator.hpp"
 
 namespace late {
 
@@ -65,9 +65,14 @@ auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
 
     CandidateMarker marker;
 
-    marker.m_corners     = order_corners_angles(detect_corners(approx));
-    cv::cornerSubPix(frame, marker.m_corners, cv::Size(5, 5), cv::Size(-1, -1), cv::TermCriteria(cv::TermCriteria::EPS | cv::TermCriteria::COUNT, 30, 0.01));
-    
+    marker.m_corners = order_corners_angles(detect_corners(approx));
+    cv::cornerSubPix(
+        frame, marker.m_corners, cv::Size(5, 5), cv::Size(-1, -1),
+        cv::TermCriteria(
+            cv::TermCriteria::EPS | cv::TermCriteria::COUNT, 30, 0.01
+        )
+    );
+
     marker.m_boundingBox = detect_rect(approx);
     marker.m_markerImage = frame(marker.m_boundingBox).clone();
     MarkerPoseEstimator::estimate_pose(marker, frame.size(), 825.0f);
@@ -131,8 +136,9 @@ auto MarkerDetection::detect_corners(const std::vector<cv::Point>& contour)
   return corners;
 }
 
-auto MarkerDetection::order_corners_sums_diffs(const std::array<cv::Point2f, 4>& corners)
-    -> std::array<cv::Point2f, 4> {
+auto MarkerDetection::order_corners_sums_diffs(
+    const std::array<cv::Point2f, 4>& corners
+) -> std::array<cv::Point2f, 4> {
   std::array<cv::Point2f, 4> ordered{};
 
   // Calculate the sum and difference of the corner points
@@ -161,12 +167,13 @@ auto MarkerDetection::order_corners_sums_diffs(const std::array<cv::Point2f, 4>&
       diff.begin(), std::max_element(diff.begin(), diff.end())
   )];
 
-  return ordered_corners;
+  return ordered;
 }
 
-auto MarkerDetection::order_corners_angles(const std::array<cv::Point2f, 4>& corners) 
-    -> std::array<cv::Point2f, 4> {
-  cv::Poin2f center{0.0f, 0.0f};
+auto MarkerDetection::order_corners_angles(
+    const std::array<cv::Point2f, 4>& corners
+) -> std::array<cv::Point2f, 4> {
+  cv::Point2f center{0.0f, 0.0f};
 
   for (const auto& corner : corners) {
     center.x += corner.x;
