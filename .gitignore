@@ -13,3 +13,4 @@ project/.godotlauncher
 /libs/marker_pipeline/cmake_install.cmake
 /libs/marker_pipeline/out
 /libs/marker_pipeline/vcpkg_installed
+/Testing/Temporary

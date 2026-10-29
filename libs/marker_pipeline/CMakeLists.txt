@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.20 )
 include(cmake/vcpkg_config.cmake)
 
 project(MarkerPipeline
@@ -29,4 +29,15 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${OpenCV_LIBS})
 add_executable(marker_pipeline main.cpp)
 target_link_libraries(marker_pipeline PRIVATE ${PROJECT_NAME})
 
+add_executable(camera_calibration camera_calibration/main.cpp)
+target_include_directories(${PROJECT_NAME}
+	PUBLIC
+		camera_calibration
+		${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+target_link_libraries(${PROJECT_NAME} PUBLIC ${OpenCV_LIBS})
 
+include(CTest)
+if(BUILD_TESTING)
+	add_subdirectory(tests)
+endif()
