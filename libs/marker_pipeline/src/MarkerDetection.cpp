@@ -1,5 +1,9 @@
 #include "MarkerDetection.hpp"
 
+#include <algorithm>
+#include <array>
+#include <cmath>
+
 #include "Marker.hpp"
 #include "MarkerPoseEstimator.hpp"
 
@@ -61,7 +65,14 @@ auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
 
     CandidateMarker marker;
 
-    marker.m_corners     = order_corners(detect_corners(approx));
+    marker.m_corners = order_corners_angles(detect_corners(approx));
+    cv::cornerSubPix(
+        frame, marker.m_corners, cv::Size(5, 5), cv::Size(-1, -1),
+        cv::TermCriteria(
+            cv::TermCriteria::EPS | cv::TermCriteria::COUNT, 30, 0.01
+        )
+    );
+
     marker.m_boundingBox = detect_rect(approx);
     marker.m_markerImage = frame(marker.m_boundingBox).clone();
     MarkerPoseEstimator::estimate_pose(marker, frame.size(), 825.0f);
@@ -71,14 +82,6 @@ auto MarkerDetection::detect_candidate_markers(cv::Mat& frame)
     markers.push_back(
         marker
     );  // May use embarkpush_back(std::move(marker)) for efficiency
-
-    // std::cout << "Marker apperent size" << marker.m_apperentSize <<
-    // std::endl;
-
-    // std::println("Detected marker with corners: ");
-    // for (const auto& corner : marker.m_corners) {
-    //   std::println("Corner: {}, {}", corner.x, corner.y);
-    // }
   }
   return markers;
 }
@@ -133,9 +136,10 @@ auto MarkerDetection::detect_corners(const std::vector<cv::Point>& contour)
   return corners;
 }
 
-auto MarkerDetection::order_corners(const std::array<cv::Point2f, 4>& corners)
-    -> std::array<cv::Point2f, 4> {
-  std::array<cv::Point2f, 4> ordered_corners{};
+auto MarkerDetection::order_corners_sums_diffs(
+    const std::array<cv::Point2f, 4>& corners
+) -> std::array<cv::Point2f, 4> {
+  std::array<cv::Point2f, 4> ordered{};
 
   // Calculate the sum and difference of the corner points
   std::array<float, 4> sum{};
@@ -147,23 +151,62 @@ auto MarkerDetection::order_corners(const std::array<cv::Point2f, 4>& corners)
   }
 
   // Top-left corner has the smallest sum
-  ordered_corners[0] = corners[std::distance(
+  ordered[0] = corners[std::distance(
       sum.begin(), std::min_element(sum.begin(), sum.end())
   )];
   // Bottom-right corner has the largest sum
-  ordered_corners[2] = corners[std::distance(
+  ordered[2] = corners[std::distance(
       sum.begin(), std::max_element(sum.begin(), sum.end())
   )];
   // Top-right corner has the smallest difference
-  ordered_corners[1] = corners[std::distance(
+  ordered[1] = corners[std::distance(
       diff.begin(), std::min_element(diff.begin(), diff.end())
   )];
   // Bottom-left corner has the largest difference
-  ordered_corners[3] = corners[std::distance(
+  ordered[3] = corners[std::distance(
       diff.begin(), std::max_element(diff.begin(), diff.end())
   )];
 
-  return ordered_corners;
+  return ordered;
+}
+
+auto MarkerDetection::order_corners_angles(
+    const std::array<cv::Point2f, 4>& corners
+) -> std::array<cv::Point2f, 4> {
+  cv::Point2f center{0.0f, 0.0f};
+
+  for (const auto& corner : corners) {
+    center.x += corner.x;
+    center.y += corner.y;
+  }
+
+  center.x /= 4.0f;
+  center.y /= 4.0f;
+
+  std::array<cv::Point2f, 4> ordered = corners;
+
+  std::sort(
+      ordered.begin(), ordered.end(),
+      [&center](const cv::Point2f& a, const cv::Point2f& b) {
+        const float angle_a = std::atan2(a.y - center.y, a.x - center.x);
+        const float angle_b = std::atan2(b.y - center.y, b.x - center.x);
+
+        return angle_a < angle_b;
+      }
+  );
+
+  const auto start = std::min_element(
+      ordered.begin(), ordered.end(),
+      [](const cv::Point2f& a, const cv::Point2f& b) {
+        if (a.y != b.y) return a.y < b.y;
+
+        return a.x < b.x;
+      }
+  );
+
+  std::rotate(ordered.begin(), start, ordered.end());
+
+  return ordered;
 }
 
 auto MarkerDetection::detect_rect(const std::vector<cv::Point>& contour)
