@@ -48,13 +48,6 @@ auto MarkerRecognition::GetValidMarkers(
     }
   }
 
-  // if (validMarkers.size() > 0) {
-  //   std::cout << "valid markers found: " << validMarkers.size() << std::endl;
-  //   for (const auto& validMarker : validMarkers) {
-  //     std::cout << "Valid marker ID: " << validMarker.m_markerTypeId
-  //               << std::endl;
-  //   }
-  // }
   return validMarkers;
 };
 

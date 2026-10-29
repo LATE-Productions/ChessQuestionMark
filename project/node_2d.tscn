@@ -23,6 +23,6 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="MarkerManager" type="MarkerManager" parent="."]
-depth = 16.0
-scale2d = 3.0
+depth = 5.0
+scale2d = 1.0
 spring = 0.25

@@ -11,6 +11,7 @@
 #include <stop_token>
 #include <thread>
 #include <vector>
+#include <filesystem>
 
 #include "CameraCapture.hpp"
 #include "DataStorage.hpp"
@@ -19,6 +20,7 @@
 #include "MarkerDetection.hpp"
 #include "MarkerRecognition.hpp"
 #include "MarkerRectification.hpp"
+#include "MarkerPoseEstimator.hpp"
 #include "RingBuffer.hpp"
 #include "pipeline/Components.hpp"
 
@@ -38,6 +40,11 @@ int main() {
 
   cv::Mat shared_frame;
 
+  if (!late::MarkerPoseEstimator::load_calibration("libs\\marker_pipeline\\camera_calibration\\camera_calibration.yaml")) {
+    return 1;
+  }
+  
+
   auto buffer =
       std::make_shared<RingBuffer<cv::Mat, 3, OverflowPolicy::DROP>>();
   cameraCapture.attach_output(buffer);
@@ -51,7 +58,7 @@ int main() {
           .attach<ImageRenderer>(115)
           .attach<MarkerDetection>(0.025, 0.25)
           .attach<MarkerRectification>()
-          .attach<MarkerRecognition>(0.85)
+          .attach<MarkerRecognition>(0.775)
           .attach<DataStorage>(100.0f)
           .on_input<ImageRenderer>([&keyPressed,
                                     &windowTitle](const cv::Mat& frame) {
