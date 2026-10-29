@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.20 )
 include(cmake/vcpkg_config.cmake)
 
 project(MarkerPipeline
@@ -36,3 +36,8 @@ target_include_directories(${PROJECT_NAME}
 		${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 target_link_libraries(${PROJECT_NAME} PUBLIC ${OpenCV_LIBS})
+
+include(CTest)
+if(BUILD_TESTING)
+	add_subdirectory(tests)
+endif()
