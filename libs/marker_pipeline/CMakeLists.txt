@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.20 )
 include(cmake/vcpkg_config.cmake)
 
 project(MarkerPipeline
@@ -45,3 +45,9 @@ add_custom_command(TARGET camera_calibration POST_BUILD
 		$<TARGET_FILE_DIR:camera_calibration>/images
 	COMMENT "Copy calibration images"
 )
+target_link_libraries(${PROJECT_NAME} PUBLIC ${OpenCV_LIBS})
+
+include(CTest)
+if(BUILD_TESTING)
+	add_subdirectory(tests)
+endif()

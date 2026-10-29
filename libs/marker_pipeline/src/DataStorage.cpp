@@ -8,16 +8,11 @@
 namespace late {
 DataStorage::DataStorage(float maxFrameMovement)
     : m_maxFrameMovement(maxFrameMovement) {
-  std::cout << "m_maxFrameMovement: " << m_maxFrameMovement << std::endl;
 }
 
 auto DataStorage::Insert(Marker& marker) -> void {
   marker.m_instanceId = GetInstanceId(marker);
   m_storedMarkers.insert_or_assign(marker.m_instanceId, marker);
-  std::println(
-      "Sucessfuly added marker {} as {}", marker.m_markerTypeId,
-      marker.m_instanceId
-  );
 };
 
 auto DataStorage::GetAllMarkers() -> std::vector<Marker> {
