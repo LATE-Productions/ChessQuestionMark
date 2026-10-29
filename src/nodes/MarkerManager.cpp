@@ -59,7 +59,7 @@ auto MarkerManager::_ready() -> void {
                         .attach<late::MarkerDetection>(0.025, 0.25)
                         .attach<late::MarkerRectification>()
                         .attach<late::MarkerRecognition>(0.775)
-                        .attach<late::DataStorage>(100.0f)
+                        .attach<late::DataStorage>(0.1f)
                         .attach<late::DataConversion>();
 
     while (!st.stop_requested()) {
@@ -88,8 +88,7 @@ auto MarkerManager::_process(double delta) -> void {
     int id = marker.m_instanceId;
     godot::Vector3 position =
         godot::Vector3(marker.m_posX, marker.m_posY, marker.m_posZ);
-    godot::Vector3 rotation =
-        godot::Vector3(marker.m_rotX, marker.m_rotY, marker.m_rotZ);
+    godot::Quaternion rotation(marker.m_quatX, marker.m_quatY, marker.m_quatZ, marker.m_quatW);
 
     update_marker(id, position, rotation);
   }
@@ -139,7 +138,7 @@ auto MarkerManager::_bind_methods() -> void {
 };
 
 auto MarkerManager::update_marker(
-    int id, godot::Vector3 position, godot::Vector3 rotation
+    int id, godot::Vector3 position, godot::Quaternion rotation
 ) -> void {
   godot::Node3D* marker_node = nullptr;
 
@@ -156,20 +155,14 @@ auto MarkerManager::update_marker(
 
     mesh_instance->set_mesh(mesh);
     marker_node->add_child(mesh_instance);
+    godot::Vector3 size{0.1f, 0.1f, 0.1f};
+    marker_node->set_scale(size);
 
     m_markers[id] = marker_node;
   }
   marker_node      = m_markers[id];
-  float depth      = static_cast<float>(m_depth);
-  float scale      = static_cast<float>(m_scale2d);
-  auto current_pos = marker_node->get_position();
-  auto new_pos     = current_pos.lerp(
-      {depth * scale * position.x, depth * scale * position.y,
-       (scale + depth) * position.z},
-      m_spring
-  );
-  marker_node->set_position(new_pos);
-  marker_node->set_rotation(rotation);
+  marker_node->set_position(position);
+  marker_node->set_quaternion(rotation);
 };
 auto MarkerManager::get_scale2d() const -> double { return m_scale2d; }
 auto MarkerManager::set_scale2d(double scale) -> void { m_scale2d = scale; }

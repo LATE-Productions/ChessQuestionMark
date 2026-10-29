@@ -15,17 +15,19 @@ struct GodotMarker {
   int m_typeId;
   int m_instanceId;
   float m_posX, m_posY, m_posZ;
-  float m_rotX, m_rotY, m_rotZ;
+  float m_quatX, m_quatY, m_quatZ, m_quatW;
 };
 
 struct Marker {
   std::uint64_t m_instanceId;
   int m_markerTypeId;
-  cv::Vec3f m_markerRotation;
+  cv::Vec4f m_markerRotation;
+  int m_rotationCorrection;
   cv::Point3f m_markerPos;
   float m_apperentSize;
   float m_estimatedDistance;
   cv::Mat m_markerImage;
+  std::array<cv::Point2f, 4> m_corners;
 };
 
 struct CandidateMarker {
@@ -33,7 +35,7 @@ struct CandidateMarker {
   std::vector<std::vector<cv::Point>> m_contours;
   cv::Rect m_boundingBox;
   cv::Mat m_markerImage;
-  cv::Vec3f m_markerRotation;
+  cv::Vec4f m_markerRotation;
   cv::Point3f m_markerPos;
   float m_apperentSize;
   float m_estimatedDistance;

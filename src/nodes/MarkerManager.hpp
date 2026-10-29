@@ -6,6 +6,7 @@
 #include <godot_cpp/variant/callable.hpp>
 #include <godot_cpp/variant/dictionary.hpp>
 #include <godot_cpp/variant/vector3.hpp>
+#include <godot_cpp/variant/quaternion.hpp>
 #include <map>
 #include <memory>
 #include <thread>
@@ -25,7 +26,7 @@ class MarkerManager : public godot::Node3D {
   auto _ready() -> void override;
   auto _exit_tree() -> void override;
   auto _process(double delta) -> void override;
-  auto update_marker(int id, godot::Vector3 position, godot::Vector3 rotation)
+  auto update_marker(int id, godot::Vector3 position, godot::Quaternion rotation)
       -> void;
 
   auto get_scale2d() const -> double;

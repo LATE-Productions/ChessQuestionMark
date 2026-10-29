@@ -1,28 +1,46 @@
-[gd_scene load_steps=2 format=3 uid="uid://bh67irdtyvvab"]
+[gd_scene format=3 uid="uid://bh67irdtyvvab"]
 
-[sub_resource type="Environment" id="Environment_y32ns"]
-background_mode = 3
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="Node3D" type="Node3D"]
+[node name="FrameSource" type="FrameSource" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch_mode = 6
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="Node3D" type="Node3D" parent="SubViewportContainer/SubViewport"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport/Node3D"]
+transform = Transform3D(0.55732495, 3.3219155e-08, 0.8302945, -0.52040124, 0.7792067, 0.34931287, -0.64697105, -0.62676704, 0.43427137, 5.575678, 2.381495, -1.2785977)
+
+[node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport/Node3D"]
 fov = 90.0
 near = 0.001
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.55732495, 0, 0.8302945, -0.52040124, 0.7792067, 0.3493129, -0.64697105, -0.62676704, 0.43427134, 5.575678, 2.381495, -1.2785977)
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_y32ns")
-
-[node name="VideoCanvasLayer" type="CanvasLayer" parent="."]
-layer = -1
-
-[node name="FrameSource" type="FrameSource" parent="VideoCanvasLayer"]
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="MarkerManager" type="MarkerManager" parent="."]
-depth = 5.0
-scale2d = 1.0
+[node name="MarkerManager" type="MarkerManager" parent="SubViewportContainer/SubViewport/Node3D"]
 spring = 0.25
+rotation_edit_mode = 1

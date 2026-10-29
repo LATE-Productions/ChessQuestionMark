@@ -6,6 +6,7 @@
 
 #include "Marker.hpp"
 #include "MarkerTemplates.hpp"
+#include "MarkerPoseEstimator.hpp"
 
 namespace late {
 MarkerRecognition::MarkerRecognition(double markerMatchPercentage)
@@ -116,11 +117,13 @@ auto MarkerRecognition::DecodeMarker(
     return false;
   }
 
-  destination.m_markerTypeId   = bestId;
-  destination.m_markerPos      = candidateMarker.m_markerPos;
-  destination.m_markerRotation = candidateMarker.m_markerRotation;
-  destination.m_apperentSize   = candidateMarker.m_apperentSize;
-  destination.m_markerImage    = candidateMarker.m_markerImage;
+  destination.m_markerTypeId       = bestId;
+  destination.m_rotationCorrection = bestRotation;
+  destination.m_apperentSize       = candidateMarker.m_apperentSize;
+  destination.m_markerImage        = candidateMarker.m_markerImage;
+  destination.m_corners            = CorrectCornerOrder(candidateMarker.m_corners, bestRotation);
+
+  MarkerPoseEstimator::estimate_pose_calibrated(destination, 0.04f);
 
   return true;
 };
@@ -170,4 +173,50 @@ auto MarkerRecognition::GetCenter(const CandidateMarker& candidateMarker)
 auto MarkerRecognition::process(CandidatePayload&& payload) -> FinalPayload {
   return {payload.m_frame, GetValidMarkers(payload.m_markers)};
 };
+
+auto MarkerRecognition::CorrectCornerOrder(
+    const std::array<cv::Point2f, 4>& corners, int bestRotation
+) -> std::array<cv::Point2f, 4> {
+  std::array<cv::Point2f, 4> corrected{};
+
+  const int shift = (bestRotation / 90) % 4;
+
+  for (int i = 0; i < corners.size(); i++) {
+    corrected[i] = corners[(i + shift) % 4];
+  }
+
+  return corrected;
+};
+
+auto MarkerRecognition::draw_markers(
+  const cv::Mat& frame, const std::vector<Marker> markers
+) -> cv::Mat {
+cv::Mat display_frame;
+cv::cvtColor(frame, display_frame, cv::COLOR_GRAY2BGR);
+
+for (const auto& marker : markers) {
+  cv::Point2f center{0.0f, 0.0f};
+
+  for (size_t i = 0; i < marker.m_corners.size(); i++) {
+    cv::Point2f corner = marker.m_corners[i];
+    cv::Point2f next =  marker.m_corners[(i + 1) % marker.m_corners.size()];
+    cv::circle(display_frame, corner, 5, cv::Scalar(0, 0, 255), -1);
+
+    cv::putText(
+        display_frame, std::to_string(i), corner + cv::Point2f(5, -5),
+        cv::FONT_HERSHEY_SIMPLEX, 0.6, cv::Scalar(255, 0, 0), 2
+    );
+
+    cv::line(display_frame, corner, next, cv::Scalar(255, 255, 0), 2);
+
+    center += corner;
+  }
+
+  center = center * 0.25f;
+
+  cv::circle(display_frame, center, 5, cv::Scalar(0, 255, 0), -1);
+}
+
+return display_frame;
+}
 }  // namespace late
