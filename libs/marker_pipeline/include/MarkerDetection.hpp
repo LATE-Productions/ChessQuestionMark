@@ -26,7 +26,7 @@ class MarkerDetection : public pipeline::IStage<cv::Mat, CandidatePayload> {
       -> std::array<cv::Point2f, 4>;
   auto order_corners_sums_diffs(const std::array<cv::Point2f, 4>& corners)
       -> std::array<cv::Point2f, 4>;
-  auto order_corners_angles(const std::array < cv::array<cv::Point2f, 4> & corners
+  auto order_corners_angles(const std::array<cv::Point2f, 4> & corners
   ) -> std::array<cv::Point2f, 4>;
   auto detect_rect(const std::vector<cv::Point>& contour) -> cv::Rect;
   auto equilateral_control(
