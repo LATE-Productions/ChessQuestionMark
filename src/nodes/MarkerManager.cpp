@@ -155,7 +155,7 @@ auto MarkerManager::update_marker(
 
     mesh_instance->set_mesh(mesh);
     marker_node->add_child(mesh_instance);
-    godot::Vector3 size{0.1f, 0.1f, 0.1f};
+    godot::Vector3 size{0.04f, 0.04f, 0.04f};
     marker_node->set_scale(size);
 
     m_markers[id] = marker_node;
