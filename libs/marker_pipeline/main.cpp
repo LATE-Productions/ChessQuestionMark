@@ -12,7 +12,6 @@
 #include "ImageRenderer.hpp"
 #include "Marker.hpp"
 #include "MarkerDetection.hpp"
-#include "MarkerPoseEstimator.hpp"
 #include "MarkerRecognition.hpp"
 #include "MarkerRectification.hpp"
 #include "RingBuffer.hpp"
@@ -32,18 +31,6 @@ int main() {
   CameraCapture cameraCapture{};
 
   cv::Mat shared_frame;
-
-#ifdef _WIN32
-  std::string fileName =
-      "libs\\marker_pipeline\\camera_calibration\\camera_calibration.yaml";
-#elif __unix__
-  std::string fileName =
-      "libs/marker_pipeline/camera_calibration/camera_calibration.yaml";
-#endif
-
-  if (!late::MarkerPoseEstimator::load_calibration(fileName)) {
-    return 1;
-  }
 
   auto buffer =
       std::make_shared<RingBuffer<cv::Mat, 3, OverflowPolicy::DROP>>();
