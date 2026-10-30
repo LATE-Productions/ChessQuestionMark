@@ -79,7 +79,7 @@ auto MarkerDetection::detect_candidate_markers(ImagePayload& imagePayload)
     marker.m_boundingBox = detect_rect(approx);
     marker.m_markerImage = binaryFrame(marker.m_boundingBox).clone();
     //MarkerPoseEstimator::estimate_pose(marker, frame.size(), 825.0f);
-    MarkerPoseEstimator::estimate_pose_calibrated(marker, 0.04f);
+    //MarkerPoseEstimator::estimate_pose_calibrated(marker, 0.04f);
     marker.m_markerId = id_generator++;  // Assigning a unique ID to the marker
     marker.m_contours.push_back(contour);
 
@@ -98,23 +98,24 @@ auto MarkerDetection::draw_markers(
 
   std::vector<std::vector<cv::Point>> contours;
 
-  cv::Mat contour_input = frame.clone();
-
   for (const auto& marker : markers) {
-    cv::Point center;
+    cv::Point2f center{0.0f, 0.0f};
 
     cv::drawContours(
         display_frame, marker.m_contours, -1, cv::Scalar(0, 255, 0), 2
     );
 
     for (size_t i = 0; i < marker.m_corners.size(); i++) {
-      cv::Point corner = marker.m_corners[i];
+      cv::Point2f corner = marker.m_corners[i];
+      cv::Point2f next =  marker.m_corners[(i + 1) % marker.m_corners.size()];
       cv::circle(display_frame, corner, 5, cv::Scalar(0, 0, 255), -1);
 
       cv::putText(
-          display_frame, std::to_string(i), corner + cv::Point(5, -5),
-          cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(255, 0, 0), 1
+          display_frame, std::to_string(i), corner + cv::Point2f(5, -5),
+          cv::FONT_HERSHEY_SIMPLEX, 0.6, cv::Scalar(255, 0, 0), 2
       );
+
+      cv::line(display_frame, corner, next, cv::Scalar(255, 255, 0), 2);
 
       center += corner;
     }

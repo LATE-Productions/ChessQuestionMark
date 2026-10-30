@@ -16,7 +16,7 @@ int main(int argc, char* argv[]) {
 
     std::vector<std::string> imagePaths;
 
-    for (int i = 0; i < 21; i++){
+    for (int i = 0; i < 27; i++){
         imagePaths.emplace_back("libs\\marker_pipeline\\camera_calibration\\images\\" + std::to_string(i) + ".jpeg");
     }
 

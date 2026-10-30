@@ -17,6 +17,10 @@ class MarkerRecognition
   auto GetValidMarkers(const std::vector<CandidateMarker>& markers)
       -> std::vector<Marker>;
 
+  static auto draw_markers(
+      const cv::Mat& frame, const std::vector<Marker> markers
+  ) -> cv::Mat;
+
   auto process(CandidatePayload&& payload) -> FinalPayload override;
 
  private:
@@ -25,6 +29,7 @@ class MarkerRecognition
   auto HammingDistance(const cv::Mat& a, const cv::Mat b) -> int;
   auto RotateMat(const cv::Mat& mat, int k) -> cv::Mat;
   auto GetCenter(const CandidateMarker& candidateMarker) -> cv::Point3f;
+  auto CorrectCornerOrder(const std::array<cv::Point2f, 4>& corners, int bestRotation) -> std::array<cv::Point2f, 4>;
   std::map<int, MarkerTemplate<6>> m_storedMarkers;
   double m_markerMatchPercentage;
 };
