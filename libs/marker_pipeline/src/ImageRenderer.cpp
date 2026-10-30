@@ -8,14 +8,28 @@ namespace late {
 ImageRenderer::ImageRenderer(uint8_t threshold) : m_threshold(threshold) {}
 ImageRenderer::ImageRenderer() : m_threshold(127) {}
 
-auto ImageRenderer::getBlackWhiteImage(cv::Mat& frame) -> void {
+auto ImageRenderer::getBinaryImage(cv::Mat& frame) -> void {
   // this->deNoise(frame);
 
-  cv::cvtColor(frame, frame, cv::COLOR_BGR2GRAY);
+  //cv::cvtColor(frame, frame, cv::COLOR_BGR2GRAY);
 
-  cv::threshold(
-      frame, frame, m_threshold, 255, cv::THRESH_BINARY
-  );  // Threshoold may need to be changed for better resaults
+  cv::adaptiveThreshold(
+      frame,                      // Input image
+      frame,                      // Output image
+      255,                        // Maximum output value
+      cv::ADAPTIVE_THRESH_GAUSSIAN_C, // Adaptive method
+      cv::THRESH_BINARY,          // Threshold type
+      31,                         // Block size (must be odd and > 1)
+      2                           // Constant subtracted from the local mean
+  );
+
+  // cv::threshold(
+  //     frame, frame, m_threshold, 255, cv::THRESH_BINARY
+  // );  // Threshoold may need to be changed for better resaults
+};
+
+auto ImageRenderer::getGrayScaleImage(cv::Mat& frame) -> void {
+  cv::cvtColor(frame, frame, cv::COLOR_BGR2GRAY);
 };
 
 auto ImageRenderer::deNoise(cv::Mat& frame) -> void {
@@ -33,8 +47,9 @@ auto ImageRenderer::deNoise(cv::Mat& frame) -> void {
 };
 
 auto ImageRenderer::process(cv::Mat&& data) -> ImagePayload {
+  getGrayScaleImage(data);
   auto greyscale = data.clone();
-  getBlackWhiteImage(greyscale);
+  getBinaryImage(data);
   return {data, greyscale};
 };
 }  // namespace late

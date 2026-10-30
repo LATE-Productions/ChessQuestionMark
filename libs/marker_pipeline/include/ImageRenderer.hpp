@@ -13,7 +13,8 @@ class ImageRenderer : public pipeline::IStage<cv::Mat, ImagePayload> {
  public:
   ImageRenderer();
   ImageRenderer(uint8_t m_threshold);
-  auto getBlackWhiteImage(cv::Mat& frame) -> void;
+  auto getBinaryImage(cv::Mat& frame) -> void;
+  auto getGrayScaleImage(cv::Mat& frame) -> void;
   auto process(cv::Mat&& input) -> ImagePayload override;
 
  private:
