@@ -9,16 +9,17 @@
 
 namespace late {
 
-class MarkerDetection : public pipeline::IStage<cv::Mat, CandidatePayload> {
+class MarkerDetection
+    : public pipeline::IStage<ImagePayload, CandidatePayload> {
  public:
   MarkerDetection(double minContourThreshold, double maxContourThreshold);
 
-  auto detect_candidate_markers(cv::Mat& frame) -> std::vector<CandidateMarker>;
+  auto detect_candidate_markers(ImagePayload& imagePayload) -> std::vector<CandidateMarker>;
   static auto draw_markers(
       const cv::Mat& frame, const std::vector<CandidateMarker> markers
   ) -> cv::Mat;
 
-  auto process(cv::Mat&& frame) -> CandidatePayload override;
+  auto process(ImagePayload&& frame) -> CandidatePayload override;
 
  protected:
  private:

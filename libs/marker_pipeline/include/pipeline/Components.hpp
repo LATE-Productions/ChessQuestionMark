@@ -24,9 +24,10 @@ class IStage {
 class Hooks {
  public:
   template <Stage T, typename F>
-    requires HookFn<F, typename T::Out>
+    requires HookFn<F, typename T::Out> || HookFn<F, typename T::In>
   auto add_hook(F&& fn) -> void {
-    using Data               = typename T::Out;
+    using Data = std::conditional_t<
+        HookFn<F, typename T::Out>, typename T::Out, typename T::In>;
     m_outputHooks[typeid(T)] = [func = std::forward<F>(fn)](const void* data) {
       func(*static_cast<const Data*>(data));
     };

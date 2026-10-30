@@ -12,6 +12,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/$<CONFIG>")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib/$<CONFIG>")
 
+include(CTest)
+
 file(GLOB_RECURSE source_files
 	CONFIGURE_DEPENDS
 		"${PROJECT_SOURCE_DIR}/src/*.[hc]"
@@ -45,4 +47,3 @@ target_link_libraries(ChessQuestionMark
 	)
 
 gdextension(${PROJECT_NAME})
-

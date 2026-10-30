@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <atomic>
 #include <chrono>
+#include <filesystem>
 #include <format>
 #include <iostream>
 #include <memory>
@@ -11,16 +12,15 @@
 #include <stop_token>
 #include <thread>
 #include <vector>
-#include <filesystem>
 
 #include "CameraCapture.hpp"
 #include "DataStorage.hpp"
 #include "ImageRenderer.hpp"
 #include "Marker.hpp"
 #include "MarkerDetection.hpp"
+#include "MarkerPoseEstimator.hpp"
 #include "MarkerRecognition.hpp"
 #include "MarkerRectification.hpp"
-#include "MarkerPoseEstimator.hpp"
 #include "RingBuffer.hpp"
 #include "pipeline/Components.hpp"
 
@@ -35,15 +35,15 @@ int main() {
   using late::MarkerRectification;
   using late::OverflowPolicy;
   using late::RingBuffer;
-  using namespace std::chrono_literals;
   CameraCapture cameraCapture{};
 
   cv::Mat shared_frame;
 
-  if (!late::MarkerPoseEstimator::load_calibration("libs\\marker_pipeline\\camera_calibration\\camera_calibration.yaml")) {
-    return 1;
-  }
-  
+  // if
+  // (!late::MarkerPoseEstimator::load_calibration("libs\\marker_pipeline\\camera_calibration\\camera_calibration.yaml"))
+  // {
+  //   return 1;
+  // }
 
   auto buffer =
       std::make_shared<RingBuffer<cv::Mat, 3, OverflowPolicy::DROP>>();
@@ -64,10 +64,12 @@ int main() {
                                     &windowTitle](const cv::Mat& frame) {
             if (keyPressed == '1') cv::imshow(windowTitle, frame);
           })
-          .on_output<ImageRenderer>([&keyPressed,
-                                     &windowTitle](const cv::Mat& frame) {
-            if (keyPressed == '2') cv::imshow(windowTitle, frame);
-          })
+          .on_output<ImageRenderer>(
+              [&keyPressed, &windowTitle](const late::ImagePayload& frame) {
+                if (keyPressed == '2')
+                  cv::imshow(windowTitle, frame.m_greyscaleFrame);
+              }
+          )
           .on_output<MarkerDetection>([&keyPressed, &windowTitle, &open_windows,
                                        &last_open_windows](
                                           const late::CandidatePayload& data
@@ -134,6 +136,8 @@ int main() {
           );
 
   cv::imshow(windowTitle, cv::Mat{100, 100, CV_8UC1, cv::Scalar::all(0)});
+
+  using namespace std::literals;
   std::this_thread::sleep_for(3000ms);
 
   while (true) {

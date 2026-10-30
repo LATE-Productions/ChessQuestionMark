@@ -43,6 +43,10 @@ struct CandidateMarker {
   std::size_t m_markerTemplateId;
 };
 
+struct ImagePayload {
+  cv::Mat m_binaryFrame;
+  cv::Mat m_greyscaleFrame;
+};
 struct CandidatePayload {
   cv::Mat m_frame;
   std::vector<CandidateMarker> m_markers;
