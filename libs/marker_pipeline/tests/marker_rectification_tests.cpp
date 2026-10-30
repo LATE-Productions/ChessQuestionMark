@@ -60,3 +60,5 @@ CHECK(result.cols == 60);
 TEST_CASE("empty marker image") {
 
 };
+
+TEST_SUITE_END();
