@@ -13,11 +13,6 @@ add_executable(tests
 target_link_libraries(tests PRIVATE MarkerPipeline doctest::doctest)
 target_compile_features(tests PRIVATE cxx_std_23)
 
-# Register with CTest
-add_test(NAME unit_tests COMMAND tests ---success -force-colors)
+add_test(NAME unit_tests COMMAND tests --success --force-colors)
+doctest_discover_tests(tests)
 
-add_custom_command(TARGET tests
-				POST_BUILD
-				COMMAND ${CMAKE_CTEST_COMMAND} -VV -C $<CONFIG>
-				COMMENT "Running tests after build..."
-)

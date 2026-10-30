@@ -252,8 +252,8 @@ auto MarkerDetection::equilateral_control(
   return valid;
 }
 
-auto MarkerDetection::process(cv::Mat&& frame) -> CandidatePayload {
-  auto candidates = detect_candidate_markers(frame);
-  return {frame.clone(), candidates};
+auto MarkerDetection::process(ImagePayload&& frame) -> CandidatePayload {
+  auto candidates = detect_candidate_markers(frame.m_greyscaleFrame);
+  return {frame.m_greyscaleFrame, candidates};
 }
 }  // namespace late

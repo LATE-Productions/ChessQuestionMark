@@ -35,7 +35,6 @@ int main() {
   using late::MarkerRectification;
   using late::OverflowPolicy;
   using late::RingBuffer;
-  using namespace std::chrono_literals;
   CameraCapture cameraCapture{};
 
   cv::Mat shared_frame;
@@ -64,10 +63,12 @@ int main() {
                                     &windowTitle](const cv::Mat& frame) {
             if (keyPressed == '1') cv::imshow(windowTitle, frame);
           })
-          .on_output<ImageRenderer>([&keyPressed,
-                                     &windowTitle](const cv::Mat& frame) {
-            if (keyPressed == '2') cv::imshow(windowTitle, frame);
-          })
+          .on_output<ImageRenderer>(
+              [&keyPressed, &windowTitle](const late::ImagePayload& frame) {
+                if (keyPressed == '2')
+                  cv::imshow(windowTitle, frame.m_greyscaleFrame);
+              }
+          )
           .on_output<MarkerDetection>([&keyPressed, &windowTitle, &open_windows,
                                        &last_open_windows](
                                           const late::CandidatePayload& data
@@ -133,6 +134,8 @@ int main() {
           );
 
   cv::imshow(windowTitle, cv::Mat{100, 100, CV_8UC1, cv::Scalar::all(0)});
+
+  using namespace std::literals;
   std::this_thread::sleep_for(3000ms);
 
   while (true) {
