@@ -46,4 +46,17 @@ target_link_libraries(ChessQuestionMark
 		MarkerPipeline
 	)
 
+# Assume the executable target is ChessQuestionMark and the calibration
+# is written to build/bin/<CONFIG>/camera_calibration.yaml by the calibrator.
+set(CALIB_SRC "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/camera_calibration.yaml")
+set(CALIB_DST "${CMAKE_CURRENT_SOURCE_DIR}/project/camera_calibration.yaml")
+add_custom_command(TARGET ChessQuestionMark POST_BUILD
+	COMMAND ${CMAKE_COMMAND}
+		-D CALIB_SRC=${CALIB_SRC}
+		-D CALIB_DST=${CALIB_DST}
+		-P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/copy-camera-calibration.cmake
+	COMMENT "Syncing camera calibration into project/"
+)
+
+
 gdextension(${PROJECT_NAME})

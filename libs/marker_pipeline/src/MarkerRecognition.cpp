@@ -3,15 +3,18 @@
 #include <algorithm>
 #include <array>
 #include <opencv2/opencv.hpp>
+#include <string>
 
 #include "Marker.hpp"
-#include "MarkerTemplates.hpp"
 #include "MarkerPoseEstimator.hpp"
+#include "MarkerTemplates.hpp"
 
 namespace late {
-MarkerRecognition::MarkerRecognition(double markerMatchPercentage)
+MarkerRecognition::MarkerRecognition(
+    double markerMatchPercentage, const std::string& filePath
+)
     : m_markerMatchPercentage(markerMatchPercentage),
-      m_poseEstimator{} {
+      m_poseEstimator{filePath} {
   // Make m_storedMarkers here
 
   m_storedMarkers.insert(
@@ -122,9 +125,10 @@ auto MarkerRecognition::DecodeMarker(
   destination.m_rotationCorrection = bestRotation;
   destination.m_apperentSize       = candidateMarker.m_apperentSize;
   destination.m_markerImage        = candidateMarker.m_markerImage;
-  destination.m_corners            = CorrectCornerOrder(candidateMarker.m_corners, bestRotation);
+  destination.m_corners =
+      CorrectCornerOrder(candidateMarker.m_corners, bestRotation);
 
-  return MarkerPoseEstimator::estimate_pose_calibrated(destination, 0.04f);
+  return m_poseEstimator.estimate_pose_calibrated(destination, 0.04f);
 };
 
 auto MarkerRecognition::HammingDistance(const cv::Mat& a, const cv::Mat b)
@@ -178,7 +182,7 @@ auto MarkerRecognition::CorrectCornerOrder(
 ) -> std::array<cv::Point2f, 4> {
   std::array<cv::Point2f, 4> corrected{};
 
-  const int shift = (4 -(bestRotation / 90) % 4) % 4;
+  const int shift = (4 - (bestRotation / 90) % 4) % 4;
 
   for (int i = 0; i < corners.size(); i++) {
     corrected[i] = corners[(i + shift) % 4];
@@ -191,34 +195,34 @@ auto MarkerRecognition::CorrectCornerOrder(
 };
 
 auto MarkerRecognition::draw_markers(
-  const cv::Mat& frame, const std::vector<Marker> markers
+    const cv::Mat& frame, const std::vector<Marker> markers
 ) -> cv::Mat {
-cv::Mat display_frame;
-cv::cvtColor(frame, display_frame, cv::COLOR_GRAY2BGR);
+  cv::Mat display_frame;
+  cv::cvtColor(frame, display_frame, cv::COLOR_GRAY2BGR);
 
-for (const auto& marker : markers) {
-  cv::Point2f center{0.0f, 0.0f};
+  for (const auto& marker : markers) {
+    cv::Point2f center{0.0f, 0.0f};
 
-  for (size_t i = 0; i < marker.m_corners.size(); i++) {
-    cv::Point2f corner = marker.m_corners[i];
-    cv::Point2f next =  marker.m_corners[(i + 1) % marker.m_corners.size()];
-    cv::circle(display_frame, corner, 5, cv::Scalar(0, 0, 255), -1);
+    for (size_t i = 0; i < marker.m_corners.size(); i++) {
+      cv::Point2f corner = marker.m_corners[i];
+      cv::Point2f next   = marker.m_corners[(i + 1) % marker.m_corners.size()];
+      cv::circle(display_frame, corner, 5, cv::Scalar(0, 0, 255), -1);
 
-    cv::putText(
-        display_frame, std::to_string(i), corner + cv::Point2f(5, -5),
-        cv::FONT_HERSHEY_SIMPLEX, 0.6, cv::Scalar(255, 0, 0), 2
-    );
+      cv::putText(
+          display_frame, std::to_string(i), corner + cv::Point2f(5, -5),
+          cv::FONT_HERSHEY_SIMPLEX, 0.6, cv::Scalar(255, 0, 0), 2
+      );
 
-    cv::line(display_frame, corner, next, cv::Scalar(255, 255, 0), 2);
+      cv::line(display_frame, corner, next, cv::Scalar(255, 255, 0), 2);
 
-    center += corner;
+      center += corner;
+    }
+
+    center = center * 0.25f;
+
+    cv::circle(display_frame, center, 5, cv::Scalar(0, 255, 0), -1);
   }
 
-  center = center * 0.25f;
-
-  cv::circle(display_frame, center, 5, cv::Scalar(0, 255, 0), -1);
-}
-
-return display_frame;
+  return display_frame;
 }
 }  // namespace late

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <string>
 #include <vector>
 
 #include "Marker.hpp"
@@ -12,7 +13,7 @@ namespace late {
 class MarkerRecognition
     : public pipeline::IStage<CandidatePayload, FinalPayload> {
  public:
-  MarkerRecognition(double markerMatchPercentage);
+  MarkerRecognition(double markerMatchPercentage, const std::string& filePath);
   auto GetValidMarkers(const std::vector<CandidateMarker>& markers)
       -> std::vector<Marker>;
 

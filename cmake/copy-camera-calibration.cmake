@@ -1,0 +1,6 @@
+if(EXISTS "${CALIB_SRC}")
+	message(STATUS "Copying calibration: ${CALIB_SRC} -> ${CALIB_DST}")
+	file(COPY_FILE "${CALIB_SRC}" "${CALIB_DST}" ONLY_IF_DIFFERENT)
+else()
+	message(WARNING "camera_calibration.yaml not found at ${CALIB_SRC}. Calibrate the camera first.")
+endif()

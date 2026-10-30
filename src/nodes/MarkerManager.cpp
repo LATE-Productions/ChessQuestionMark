@@ -6,6 +6,7 @@
 #include <godot_cpp/classes/box_mesh.hpp>
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/mesh_instance3d.hpp>
+#include <godot_cpp/classes/project_settings.hpp>
 #include <godot_cpp/classes/ref.hpp>
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/core/memory.hpp>
@@ -44,13 +45,19 @@ auto MarkerManager::_ready() -> void {
   m_source->attach_output(m_buffer);
   m_worker = std::jthread([buffer = m_buffer, &mtx = m_mtx,
                            &output = m_output](std::stop_token st) {
-    auto pipeline = late::pipeline::make_pipeline<cv::Mat>()
-                        .attach<late::ImageRenderer>(113)
-                        .attach<late::MarkerDetection>(0.025, 0.25)
-                        .attach<late::MarkerRectification>()
-                        .attach<late::MarkerRecognition>(0.775)
-                        .attach<late::DataStorage>(0.1f)
-                        .attach<late::DataConversion>();
+    std::string calinbrationPath =
+        godot::ProjectSettings::get_singleton()
+            ->globalize_path("res://camera_calibration.yaml")
+            .utf8()
+            .get_data();
+    auto pipeline =
+        late::pipeline::make_pipeline<cv::Mat>()
+            .attach<late::ImageRenderer>(113)
+            .attach<late::MarkerDetection>(0.025, 0.25)
+            .attach<late::MarkerRectification>()
+            .attach<late::MarkerRecognition>(0.775, calinbrationPath)
+            .attach<late::DataStorage>(0.1f)
+            .attach<late::DataConversion>();
 
     while (!st.stop_requested()) {
       auto data = buffer->read();
@@ -76,7 +83,9 @@ auto MarkerManager::_process(double delta) -> void {
     int id = marker.m_instanceId;
     godot::Vector3 position =
         godot::Vector3(marker.m_posX, marker.m_posY, marker.m_posZ);
-    godot::Quaternion rotation(marker.m_quatX, marker.m_quatY, marker.m_quatZ, marker.m_quatW);
+    godot::Quaternion rotation(
+        marker.m_quatX, marker.m_quatY, marker.m_quatZ, marker.m_quatW
+    );
 
     update_marker(id, position, rotation);
   }
@@ -148,7 +157,7 @@ auto MarkerManager::update_marker(
 
     m_markers[id] = marker_node;
   }
-  marker_node      = m_markers[id];
+  marker_node = m_markers[id];
   marker_node->set_position(position);
   marker_node->set_quaternion(rotation);
 };
