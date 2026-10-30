@@ -72,7 +72,7 @@ auto Main::_process(double delta_time) -> void {
   if (m_video_capture->read(frame_input)) 
  
     cv::Mat rgb_frame;
-    cv::Mat frame = m_image_renderer->getBlackWhiteImage(frame_input);
+    cv::Mat frame = m_image_renderer->getBinaryImage(frame_input);
 
     std::vector<CandidateMarker> candidate_markers =
         m_marker_detection->detect_candidate_markers(frame);
