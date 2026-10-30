@@ -26,8 +26,8 @@ auto MarkerDetection::detect_candidate_markers(ImagePayload& imagePayload)
   std::vector<CandidateMarker> markers{};
   std::array<cv::Point2f, 4> corners{};
 
-  cv::Mat binaryFrame = imagePayload.m_binaryframe;
-  cv::Mat grayFrame = imagePayload.m_grayscaleframe;
+  cv::Mat binaryFrame = imagePayload.m_binaryFrame;
+  cv::Mat grayFrame   = imagePayload.m_greyscaleFrame;
 
   if (binaryFrame.empty()) {
     return markers;
@@ -35,13 +35,17 @@ auto MarkerDetection::detect_candidate_markers(ImagePayload& imagePayload)
 
   std::vector<std::vector<cv::Point>> contours;
 
-  cv::findContours(binaryFrame, contours, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
+  cv::findContours(
+      binaryFrame, contours, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE
+  );
   markers.reserve(contours.size());  // Reserve space for efficiency
   // cv::drawContours(frame, contours, 0, cv::Scalar(0, 0, 255), 2);
 
   std::size_t id_generator = 0;
-  int minContourThreshold  = (binaryFrame.cols * binaryFrame.rows) * m_minContourThreshold;
-  int maxContourThreshold  = (binaryFrame.cols * binaryFrame.rows) * m_maxContourThreshold;
+  int minContourThreshold =
+      (binaryFrame.cols * binaryFrame.rows) * m_minContourThreshold;
+  int maxContourThreshold =
+      (binaryFrame.cols * binaryFrame.rows) * m_maxContourThreshold;
   for (const auto& contour : contours) {
     if (cv::contourArea(contour) < minContourThreshold ||
         cv::contourArea(contour) > maxContourThreshold) {
@@ -78,7 +82,7 @@ auto MarkerDetection::detect_candidate_markers(ImagePayload& imagePayload)
 
     marker.m_boundingBox = detect_rect(approx);
     marker.m_markerImage = binaryFrame(marker.m_boundingBox).clone();
-    //MarkerPoseEstimator::estimate_pose(marker, frame.size(), 825.0f);
+    // MarkerPoseEstimator::estimate_pose(marker, frame.size(), 825.0f);
     MarkerPoseEstimator::estimate_pose_calibrated(marker, 0.04f);
     marker.m_markerId = id_generator++;  // Assigning a unique ID to the marker
     marker.m_contours.push_back(contour);
@@ -256,7 +260,7 @@ auto MarkerDetection::equilateral_control(
 }
 
 auto MarkerDetection::process(ImagePayload&& frame) -> CandidatePayload {
-  auto candidates = detect_candidate_markers(frame.m_greyscaleFrame);
-  return {frame.m_greyscaleFrame, candidates};
+  auto candidates = detect_candidate_markers(frame);
+  return {frame.m_binaryFrame, candidates};
 }
 }  // namespace late

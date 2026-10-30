@@ -1,6 +1,8 @@
 #include "MarkerManager.hpp"
 
 #include <algorithm>
+#include <filesystem>
+#include <format>
 #include <godot_cpp/classes/box_mesh.hpp>
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/mesh_instance3d.hpp>
@@ -18,16 +20,14 @@
 #include <optional>
 #include <thread>
 #include <vector>
-#include <format>
-#include <filesystem>
 
 #include "DataConversion.hpp"
 #include "DataStorage.hpp"
 #include "ImageRenderer.hpp"
 #include "MarkerDetection.hpp"
+#include "MarkerPoseEstimator.hpp"
 #include "MarkerRecognition.hpp"
 #include "MarkerRectification.hpp"
-#include "MarkerPoseEstimator.hpp"
 #include "pipeline/Components.hpp"
 
 namespace chess {
@@ -37,13 +37,17 @@ auto MarkerManager::_ready() -> void {
     return;
   }
 
-  if (!late::MarkerPoseEstimator::load_calibration("..\\libs\\marker_pipeline\\camera_calibration\\camera_calibration.yaml")) {
+#ifdef _WIN32
+  std::string fileName =
+      "libs\\marker_pipeline\\camera_calibration\\camera_calibration.yaml";
+#elif __unix__
+  std::string fileName =
+      "libs/marker_pipeline/camera_calibration/camera_calibration.yaml";
+#endif
+  if (!late::MarkerPoseEstimator::load_calibration(fileName)) {
     auto path = std::filesystem::absolute("data.txt\n\n\n");
+    godot::UtilityFunctions::print(godot::String(path.c_str()));
 
-    godot::UtilityFunctions::print(
-      godot::String(path.c_str())
-  );
-    
     return;
   }
 
@@ -74,9 +78,7 @@ auto MarkerManager::_ready() -> void {
   });
 };
 
-auto MarkerManager::_exit_tree() -> void {
-  m_worker.request_stop();
-}
+auto MarkerManager::_exit_tree() -> void { m_worker.request_stop(); }
 auto MarkerManager::_process(double delta) -> void {
   std::optional<std::vector<late::GodotMarker>> data;
   {

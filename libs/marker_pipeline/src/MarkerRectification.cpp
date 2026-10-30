@@ -19,12 +19,15 @@ auto MarkerRectification::rectify_markers(
 auto MarkerRectification::rectify_markerImage(
     const cv::Mat& frame, const CandidateMarker& marker
 ) -> cv::Mat {
-  int rows                               = marker.m_markerImage.rows - 1;
-  int cols                               = marker.m_markerImage.cols - 1;
-  int destSize                           = std::max(rows, cols);
+  int rows     = marker.m_markerImage.rows;
+  int cols     = marker.m_markerImage.cols;
+  int destSize = std::max(rows, cols);
+  if (destSize < 2) return {};
+  const float last = static_cast<float>(destSize - 1);
+
   std::array<cv::Point2f, 4> dst_corners = {
-      cv::Point2f(0, 0), cv::Point2f(destSize, 0),
-      cv::Point2f(destSize, destSize), cv::Point2f(0, destSize)
+      cv::Point2f(0, 0), cv::Point2f(last, 0), cv::Point2f(last, last),
+      cv::Point2f(0, last)
   };
 
   cv::Mat homography =
