@@ -158,7 +158,11 @@ auto MarkerManager::update_marker(
     m_markers[id] = marker_node;
   }
   marker_node = m_markers[id];
+
+  godot::Vector3 localOffset{0.0f, marker_node->size().y / 2, 0.0f};
+
   marker_node->set_position(position);
+  marker_node->translate_object_local(localOffset);
   marker_node->set_quaternion(rotation);
 };
 auto MarkerManager::get_scale2d() const -> double { return m_scale2d; }

@@ -2,6 +2,8 @@
 
 #include <mutex>
 
+#include <opencv2/imgproc.hpp>
+
 namespace late {
 CameraCapture::CameraCapture()
     : m_captureFeed(std::make_unique<cv::VideoCapture>(0)),
@@ -16,7 +18,7 @@ CameraCapture::CameraCapture()
     while (m_running && m_captureFeed->isOpened()) {
       cv::Mat frame;
 
-      if (m_captureFeed->read(frame)) {
+      if (m_captureFeed->read(frame)) {  
         std::lock_guard lock{m_mutex};
 
         for (auto& output : m_outputs) output->write(frame.clone());

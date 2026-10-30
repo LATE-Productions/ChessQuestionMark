@@ -28,9 +28,9 @@ auto FrameSource::_ready() -> void {
     return;
   }
 
-  set_expand_mode(TextureRect::EXPAND_KEEP_SIZE);
-  set_stretch_mode(TextureRect::STRETCH_KEEP_ASPECT_COVERED);
-  set_anchors_preset(godot::Control::PRESET_FULL_RECT, true);
+  //set_expand_mode(TextureRect::EXPAND_KEEP_SIZE);
+  //set_stretch_mode(TextureRect::STRETCH_KEEP_ASPECT_COVERED);
+  //set_anchors_preset(godot::Control::PRESET_FULL_RECT, true);
 
   m_source = godot::Object::cast_to<VideoSource>(
       godot::Engine::get_singleton()->get_singleton("VideoSource"));
@@ -46,7 +46,7 @@ auto FrameSource::_ready() -> void {
         cv::Mat rgb_frame;
         cv::cvtColor(data.value(), rgb_frame, cv::COLOR_BGR2RGB);
 
-        size_t image_size = data.value().total() * data.value().elemSize();
+        size_t image_size = rgb_frame.total() * rgb_frame.elemSize();
         PackedByteArray bytes;
         bytes.resize(image_size);
         std::memcpy(bytes.ptrw(), rgb_frame.data, image_size);
