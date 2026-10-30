@@ -29,9 +29,24 @@ auto MarkerPoseEstimator::load_calibration(const std::string& fileName) -> bool{
   fs["camera_matrix"] >> m_cameraMatrix;
   fs["distortion_coefficients"] >> m_distCoeffs;
 
+  
   fs.release();
+  
+  if (m_cameraMatrix.empty() || m_distCoeffs.empty()){
+    return false;
+  }
 
-  return !m_cameraMatrix.empty() && !m_distCoeffs.empty();
+
+  const double scaleX = 1920.0 / 1600.0;
+  const double scaleY = 1080.0 / 900.0;
+  
+  m_cameraMatrix.at<double>(0, 0) *= scaleX; // fx
+  m_cameraMatrix.at<double>(0, 2) *= scaleX; // cx
+  
+  m_cameraMatrix.at<double>(1, 1) *= scaleY; // fy
+  m_cameraMatrix.at<double>(1, 2) *= scaleY; // cy
+
+  return true;
 };
 
 // auto MarkerPoseEstimator::estimate_pose(

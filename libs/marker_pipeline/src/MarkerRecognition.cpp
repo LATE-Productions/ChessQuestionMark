@@ -124,7 +124,7 @@ auto MarkerRecognition::DecodeMarker(
   destination.m_markerImage        = candidateMarker.m_markerImage;
   destination.m_corners            = CorrectCornerOrder(candidateMarker.m_corners, bestRotation);
 
-  return MarkerPoseEstimator::estimate_pose_calibrated(destination, 0.04f);
+  return m_poseEstimator.estimate_pose_calibrated(destination, 0.04f);
 };
 
 auto MarkerRecognition::HammingDistance(const cv::Mat& a, const cv::Mat b)
