@@ -10,7 +10,8 @@
 
 namespace late {
 MarkerRecognition::MarkerRecognition(double markerMatchPercentage)
-    : m_markerMatchPercentage(markerMatchPercentage) {
+    : m_markerMatchPercentage(markerMatchPercentage),
+      m_poseEstimator{} {
   // Make m_storedMarkers here
 
   m_storedMarkers.insert(
@@ -123,9 +124,7 @@ auto MarkerRecognition::DecodeMarker(
   destination.m_markerImage        = candidateMarker.m_markerImage;
   destination.m_corners            = CorrectCornerOrder(candidateMarker.m_corners, bestRotation);
 
-  MarkerPoseEstimator::estimate_pose_calibrated(destination, 0.04f);
-
-  return true;
+  return MarkerPoseEstimator::estimate_pose_calibrated(destination, 0.04f);
 };
 
 auto MarkerRecognition::HammingDistance(const cv::Mat& a, const cv::Mat b)

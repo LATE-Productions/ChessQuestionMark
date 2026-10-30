@@ -2,6 +2,7 @@
 
 #include <map>
 #include <vector>
+#include <memory>
 
 #include "Marker.hpp"
 #include "MarkerTemplates.hpp"
@@ -28,7 +29,9 @@ class MarkerRecognition
   auto RotateMat(const cv::Mat& mat, int k) -> cv::Mat;
   auto GetCenter(const CandidateMarker& candidateMarker) -> cv::Point3f;
   auto CorrectCornerOrder(const std::array<cv::Point2f, 4>& corners, int bestRotation) -> std::array<cv::Point2f, 4>;
+  private:
   std::map<int, MarkerTemplate<6>> m_storedMarkers;
   double m_markerMatchPercentage;
+  MarkerPoseEstimator m_poseEstimator;
 };
 }  // namespace late

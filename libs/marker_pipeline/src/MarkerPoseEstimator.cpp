@@ -5,8 +5,19 @@
 #include <cmath>
 
 namespace late {
-cv::Mat MarkerPoseEstimator::m_cameraMatrix;
-cv::Mat MarkerPoseEstimator::m_distCoeffs;
+
+  MarkerPoseEstimator::MarkerPoseEstimator() {
+    #ifdef _WIN32
+    std::string fileName =
+        "libs\\marker_pipeline\\camera_calibration\\camera_calibration.yaml";
+    #elif __unix__
+      std::string fileName =
+          "libs/marker_pipeline/camera_calibration/camera_calibration.yaml";
+    #endif
+
+    bool isLoaded = load_calibration(fileName);
+    assert(isLoaded);
+  };
 
 auto MarkerPoseEstimator::load_calibration(const std::string& fileName) -> bool{
   cv::FileStorage fs(fileName, cv::FileStorage::READ);

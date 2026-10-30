@@ -37,20 +37,6 @@ auto MarkerManager::_ready() -> void {
     return;
   }
 
-#ifdef _WIN32
-  std::string fileName =
-      "libs\\marker_pipeline\\camera_calibration\\camera_calibration.yaml";
-#elif __unix__
-  std::string fileName =
-      "libs/marker_pipeline/camera_calibration/camera_calibration.yaml";
-#endif
-  if (!late::MarkerPoseEstimator::load_calibration(fileName)) {
-    auto path = std::filesystem::absolute("data.txt\n\n\n");
-    godot::UtilityFunctions::print(godot::String(path.c_str()));
-
-    return;
-  }
-
   m_source = godot::Object::cast_to<VideoSource>(
       godot::Engine::get_singleton()->get_singleton("VideoSource")
   );
