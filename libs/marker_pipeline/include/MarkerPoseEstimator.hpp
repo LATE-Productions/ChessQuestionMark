@@ -22,11 +22,11 @@ class MarkerPoseEstimator {
   ) -> void;
 
   static auto estimate_pose_calibrated(
-      CandidateMarker& candidate, float markerSize = 0.04f
+      Marker& marker, float markerSize = 0.04f
   ) -> bool;
 
- private:
-  static auto rotation_matrix_convertion_yxz(const cv::Matx33d& R) -> cv::Vec3f;
+  private:
+    static auto rotation_matrix_conversion_quat(const cv::Matx33d& R) -> cv::Vec4f;
 
   static cv::Mat m_cameraMatrix;
   static cv::Mat m_distCoeffs;

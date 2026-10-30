@@ -117,7 +117,8 @@ int main() {
               [&keyPressed, &windowTitle, &open_windows,
                &last_open_windows](const late::FinalPayload& data) {
                 if (keyPressed == '6') {
-                  cv::imshow(windowTitle, data.m_frame);
+                  auto frame = MarkerRecognition::draw_markers(data.m_frame, data.m_markers);
+                  cv::imshow(windowTitle, frame);
                   auto valid_markers = data.m_markers;
 
                   for (int i = 0; i < valid_markers.size(); i++) {
