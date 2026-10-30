@@ -32,8 +32,9 @@ auto ImageRenderer::deNoise(cv::Mat& frame) -> void {
   );  // Closing removes black pixles in a group of white pixels
 };
 
-auto ImageRenderer::process(cv::Mat&& data) -> cv::Mat {
-  getBlackWhiteImage(data);
-  return data;
+auto ImageRenderer::process(cv::Mat&& data) -> ImagePayload {
+  auto greyscale = data.clone();
+  getBlackWhiteImage(greyscale);
+  return {data, greyscale};
 };
 }  // namespace late
