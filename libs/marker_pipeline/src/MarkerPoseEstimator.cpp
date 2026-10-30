@@ -109,7 +109,7 @@ for (int row = 0; row < 3; ++row){
   }
 }
 
-const cv::Matx33d rotGodot = (S * R * S).t();
+const cv::Matx33d rotGodot = S * R * S;
 
 marker.m_markerPos = cv::Point3f(static_cast<float>(tvec.at<double>(0)), static_cast<float>(tvec.at<double>(1)), static_cast<float>(tvec.at<double>(2)));
 marker.m_markerRotation = rotation_matrix_conversion_quat(rotGodot);

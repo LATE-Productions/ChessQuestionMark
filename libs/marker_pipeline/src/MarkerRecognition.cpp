@@ -179,11 +179,14 @@ auto MarkerRecognition::CorrectCornerOrder(
 ) -> std::array<cv::Point2f, 4> {
   std::array<cv::Point2f, 4> corrected{};
 
-  const int shift = (bestRotation / 90) % 4;
+  const int shift = (4 -(bestRotation / 90) % 4) % 4;
 
   for (int i = 0; i < corners.size(); i++) {
     corrected[i] = corners[(i + shift) % 4];
   }
+
+  std::cout << "bestRotation: " << bestRotation << '\n';
+  std::cout << "shift: " << shift << '\n';
 
   return corrected;
 };

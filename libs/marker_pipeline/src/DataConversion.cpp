@@ -20,9 +20,9 @@ auto DataConversion::convert_marker(const Marker& marker) -> GodotMarker {
   output.m_posX       = marker.m_markerPos.x;
   output.m_posY       = -marker.m_markerPos.y;
   output.m_posZ       = -marker.m_markerPos.z;
-  output.m_quatX      = -marker.m_markerRotation[0];
-  output.m_quatY      = -marker.m_markerRotation[1];
-  output.m_quatZ      = -marker.m_markerRotation[2];
+  output.m_quatX      = marker.m_markerRotation[0];
+  output.m_quatY      = marker.m_markerRotation[1];
+  output.m_quatZ      = marker.m_markerRotation[2];
   output.m_quatW      = marker.m_markerRotation[3];
 
   return output;
