@@ -1,15 +1,9 @@
-#include <algorithm>
-#include <atomic>
-#include <chrono>
-#include <filesystem>
 #include <format>
-#include <iostream>
 #include <memory>
 #include <opencv2/core/mat.hpp>
 #include <opencv2/core/types.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/opencv.hpp>
-#include <stop_token>
 #include <thread>
 #include <vector>
 
@@ -39,11 +33,17 @@ int main() {
 
   cv::Mat shared_frame;
 
-  // if
-  // (!late::MarkerPoseEstimator::load_calibration("libs\\marker_pipeline\\camera_calibration\\camera_calibration.yaml"))
-  // {
-  //   return 1;
-  // }
+#ifdef _WIN32
+  std::string fileName =
+      "libs\\marker_pipeline\\camera_calibration\\camera_calibration.yaml";
+#elif __unix__
+  std::string fileName =
+      "libs/marker_pipeline/camera_calibration/camera_calibration.yaml";
+#endif
+
+  if (!late::MarkerPoseEstimator::load_calibration(fileName)) {
+    return 1;
+  }
 
   auto buffer =
       std::make_shared<RingBuffer<cv::Mat, 3, OverflowPolicy::DROP>>();
@@ -58,7 +58,7 @@ int main() {
           .attach<ImageRenderer>(115)
           .attach<MarkerDetection>(0.025, 0.25)
           .attach<MarkerRectification>()
-          .attach<MarkerRecognition>(0.775)
+          .attach<MarkerRecognition>(0.7)
           .attach<DataStorage>(100.0f)
           .on_input<ImageRenderer>([&keyPressed,
                                     &windowTitle](const cv::Mat& frame) {

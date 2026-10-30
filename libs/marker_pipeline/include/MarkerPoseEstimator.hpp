@@ -5,6 +5,13 @@
 #include "Marker.hpp"
 
 namespace late {
+class IPoseEstimator {
+  virtual auto estimate_pose(
+      CandidateMarker& candidate, float markerSize = 0.04f
+  ) -> bool                 = 0;
+  virtual ~IPoseEstimator() = default;
+};
+
 class MarkerPoseEstimator {
  public:
   static auto load_calibration(const std::string& fileName) -> bool;

@@ -3,12 +3,10 @@
 #include <cstdint>
 #include <limits>
 #include <opencv2/opencv.hpp>
-#include <print>
 
 namespace late {
 DataStorage::DataStorage(float maxFrameMovement)
-    : m_maxFrameMovement(maxFrameMovement) {
-}
+    : m_maxFrameMovement(maxFrameMovement) {}
 
 auto DataStorage::Insert(Marker& marker) -> void {
   marker.m_instanceId = GetInstanceId(marker);
@@ -26,8 +24,8 @@ auto DataStorage::GetAllMarkers() -> std::vector<Marker> {
   return markers;
 };
 
-auto DataStorage::RemoveMarker(const Marker& marker) -> void{
-    m_storedMarkers.erase(marker.m_instanceId);
+auto DataStorage::RemoveMarker(const Marker& marker) -> void {
+  m_storedMarkers.erase(marker.m_instanceId);
 };
 
 auto DataStorage::GetInstanceId(const Marker& marker) -> uint64_t {
