@@ -9,6 +9,7 @@ include("${doctest_SOURCE_DIR}/scripts/cmake/doctest.cmake")  # for doctest_disc
 add_executable(tests
 	main.cpp
 	pipeline_builder.cpp
+	marker_rectification_tests.cpp
 )
 target_link_libraries(tests PRIVATE MarkerPipeline doctest::doctest)
 target_compile_features(tests PRIVATE cxx_std_23)

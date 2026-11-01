@@ -17,7 +17,6 @@ class MarkerRectification
 
   auto process(CandidatePayload&& payload) -> CandidatePayload override;
 
- private:
   auto rectify_markerImage(const cv::Mat& frame, const CandidateMarker& marker)
       -> cv::Mat;
 };

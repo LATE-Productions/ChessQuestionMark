@@ -159,7 +159,7 @@ auto MarkerManager::update_marker(
   }
   marker_node = m_markers[id];
 
-  godot::Vector3 localOffset{0.0f, marker_node->size().y / 2, 0.0f};
+  godot::Vector3 localOffset{0.0f, marker_node->get_scale().y / 2, 0.0f};
 
   marker_node->set_position(position);
   marker_node->translate_object_local(localOffset);
