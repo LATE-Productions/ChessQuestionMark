@@ -61,6 +61,8 @@ auto DataStorage::GetInstanceId(const Marker& marker) -> uint64_t {
   return m_nextInstanceId++;
 };
 auto DataStorage::process(FinalPayload&& payload) -> std::vector<Marker> {
+  m_storedMarkers.clear();
+  
   for (auto& marker : payload.m_markers) {
     Insert(marker);
   }

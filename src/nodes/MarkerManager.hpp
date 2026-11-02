@@ -8,6 +8,7 @@
 #include <godot_cpp/variant/vector3.hpp>
 #include <godot_cpp/variant/quaternion.hpp>
 #include <map>
+#include <unordered_map>
 #include <memory>
 #include <thread>
 
@@ -26,6 +27,7 @@ class MarkerManager : public godot::Node3D {
   auto _ready() -> void override;
   auto _exit_tree() -> void override;
   auto _process(double delta) -> void override;
+  auto create_marker(int markerId) -> godot::Node3D*;
   auto update_marker(int id, godot::Vector3 position, godot::Quaternion rotation)
       -> void;
 
@@ -46,6 +48,7 @@ class MarkerManager : public godot::Node3D {
   godot::Ref<MarkerContainer> m_markerData;
   std::map<int, godot::Node3D*> m_markers;
   std::map<int, godot::Vector3> m_targetPositions;
+  std::unordered_map<int, double> m_lastSeenMarkers;
 
   std::jthread m_worker;
   std::mutex m_mtx{};
@@ -57,5 +60,7 @@ class MarkerManager : public godot::Node3D {
   double m_depth;
   double m_scale2d;
   double m_spring = 0.1f;
+  double m_elapsedTime = 0.0;
+  double m_markerTimeout = 1.0;
 };
 }  // Namespace chess
