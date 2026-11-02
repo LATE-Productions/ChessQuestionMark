@@ -17,22 +17,33 @@ MarkerRecognition::MarkerRecognition(
       m_poseEstimator{filePath} {
   // Make m_storedMarkers here
 
-  m_storedMarkers.insert(
-      {0, std::array<bool, 36>{
-              0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1,
-              0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0,
-          }}
+  m_storedMarkers.insert({0, std::array<bool, 36>{0, 0, 0, 1, 1, 1, 
+                                                  1, 0, 0, 0, 1, 1, 
+                                                  1, 1, 0, 1, 1, 1,
+                                                  0, 1, 1, 0, 0, 0, 
+                                                  0, 0, 1, 0, 1, 0, 
+                                                  1, 0, 0, 1, 1, 0}});
+
+  m_storedMarkers.insert({1, std::array<bool, 36>{0, 0, 0, 0, 1, 1, 
+                                                  1, 0, 1, 1, 1, 1, 
+                                                  1, 0, 1, 1, 1, 0,
+                                                  1, 0, 0, 0, 1, 1, 
+                                                  1, 0, 0, 0, 1, 0, 
+                                                  0, 1, 0, 0, 0, 1}});
+
+  m_storedMarkers.insert({2, std::array<bool, 36>{0, 0, 0, 1, 0, 1, 
+                                                  0, 1, 1, 0, 0, 1, 
+                                                  0, 0, 0, 0, 0, 1,
+                                                  1, 1, 1, 1, 1, 0, 
+                                                  1, 0, 1, 0, 1, 1, 
+                                                  0, 0, 1, 1, 0, 1}});
+
+  m_storedMarkers.insert({3, std::array<bool, 36>{1, 1, 1, 0, 0, 1, 
+                                                  0, 0, 0, 1, 1, 1, 
+                                                  1, 0, 0, 1, 1, 1, 
+                                                  1, 0, 1, 0, 0, 1, 
+                                                  0, 1, 1, 0, 0, 0}}
   );
-
-  m_storedMarkers.insert({1, std::array<bool, 36>{0, 0, 0, 0, 1, 1, 1, 0, 1,
-                                                  1, 1, 1, 1, 0, 1, 1, 1, 0,
-                                                  1, 0, 0, 0, 1, 1, 1, 0, 0,
-                                                  0, 1, 0, 0, 1, 0, 0, 0, 1}});
-
-  m_storedMarkers.insert({2, std::array<bool, 36>{0, 0, 0, 1, 0, 1, 0, 1, 1,
-                                                  0, 0, 1, 0, 0, 0, 0, 0, 1,
-                                                  1, 1, 1, 1, 1, 0, 1, 0, 1,
-                                                  0, 1, 1, 0, 0, 1, 1, 0, 1}});
 };
 
 auto MarkerRecognition::GetValidMarkers(
