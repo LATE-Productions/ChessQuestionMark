@@ -207,9 +207,20 @@ auto MarkerManager::update_marker(
 
   godot::Vector3 localOffset{0.0f, markerNode->get_scale().y / 2, 0.0f};
 
+  godot::Quaternion currentRotation =
+  markerNode->get_quaternion();
+
+// Ensure both quaternions are in the same hemisphere.
+if (currentRotation.dot(rotation) < 0.0) {
+  rotation = -rotation;
+}
+
+godot::Quaternion smoothRotation =
+  currentRotation.slerp(rotation, m_spring);
+
   markerNode->set_position(position);
   markerNode->translate_object_local(localOffset);
-  markerNode->set_quaternion(rotation);
+  markerNode->set_quaternion(smoothRotation);
 };
 auto MarkerManager::get_scale2d() const -> double { return m_scale2d; }
 auto MarkerManager::set_scale2d(double scale) -> void { m_scale2d = scale; }

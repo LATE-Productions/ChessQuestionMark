@@ -17,22 +17,31 @@ MarkerRecognition::MarkerRecognition(
       m_poseEstimator{filePath} {
   // Make m_storedMarkers here
 
-  m_storedMarkers.insert(
-      {0, std::array<bool, 36>{
-              0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1,
-              0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0,
-          }}
-  );
+  m_storedMarkers.insert({0, std::array<bool, 36>{0, 0, 0, 1, 1, 1, 
+                                                  1, 0, 0, 0, 1, 1, 
+                                                  1, 1, 0, 1, 1, 1,
+                                                  0, 1, 1, 0, 0, 0, 
+                                                  0, 0, 1, 0, 1, 0, 
+                                                  1, 0, 0, 1, 1, 0}});
 
-  m_storedMarkers.insert({1, std::array<bool, 36>{0, 0, 0, 0, 1, 1, 1, 0, 1,
-                                                  1, 1, 1, 1, 0, 1, 1, 1, 0,
-                                                  1, 0, 0, 0, 1, 1, 1, 0, 0,
-                                                  0, 1, 0, 0, 1, 0, 0, 0, 1}});
+  m_storedMarkers.insert({1, std::array<bool, 36>{0, 0, 0, 0, 1, 1, 
+                                                  1, 0, 1, 1, 1, 1, 
+                                                  1, 0, 1, 1, 1, 0,
+                                                  1, 0, 0, 0, 1, 1, 
+                                                  1, 0, 0, 0, 1, 0, 
+                                                  0, 1, 0, 0, 0, 1}});
 
   m_storedMarkers.insert({2, std::array<bool, 36>{0, 0, 0, 1, 0, 1, 0, 1, 1,
                                                   0, 0, 1, 0, 0, 0, 0, 0, 1,
                                                   1, 1, 1, 1, 1, 0, 1, 0, 1,
                                                   0, 1, 1, 0, 0, 1, 1, 0, 1}});
+  
+  m_storedMarkers.insert({3, std::array<bool, 36>{1, 1, 1, 0, 0, 1, 
+                                                  0, 0, 0, 1, 1, 1, 
+                                                  1, 0, 0, 1, 1, 1,
+                                                  1, 0, 1, 0, 0, 1, 
+                                                  1, 1, 0, 0, 1, 0, 
+                                                  0, 1, 1, 0, 0, 0}});
 };
 
 auto MarkerRecognition::GetValidMarkers(
@@ -182,7 +191,7 @@ auto MarkerRecognition::CorrectCornerOrder(
 ) -> std::array<cv::Point2f, 4> {
   std::array<cv::Point2f, 4> corrected{};
 
-  const int shift = (4 - (bestRotation / 90) % 4) % 4;
+  const int shift = (bestRotation / 90) % 4;
 
   for (int i = 0; i < corners.size(); i++) {
     corrected[i] = corners[(i + shift) % 4];

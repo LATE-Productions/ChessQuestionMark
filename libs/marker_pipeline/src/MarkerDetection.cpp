@@ -185,12 +185,14 @@ auto MarkerDetection::order_corners_angles(
   cv::Point2f center{0.0f, 0.0f};
 
   for (const auto& corner : corners) {
-    center.x += corner.x;
-    center.y += corner.y;
+    center += corner;
+    // center.x += corner.x;
+    // center.y += corner.y;
   }
 
-  center.x /= 4.0f;
-  center.y /= 4.0f;
+  center *= 0.25f;
+  // center.x /= 4.0f;
+  // center.y /= 4.0f;
 
   std::array<cv::Point2f, 4> ordered = corners;
 
