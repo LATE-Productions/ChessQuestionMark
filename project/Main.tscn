@@ -37,4 +37,3 @@ near = 0.001
 [node name="MarkerManager" type="MarkerManager" parent="SubViewportContainer/SubViewport/Node3D"]
 scale2d = nan
 spring = 0.25
-rotation_edit_mode = 1

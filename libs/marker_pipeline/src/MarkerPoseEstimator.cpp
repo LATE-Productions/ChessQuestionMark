@@ -97,10 +97,10 @@ auto MarkerPoseEstimator::estimate_pose_calibrated(
   const float half = markerSize * 0.5f;
 
   const std::vector<cv::Point3f> objectPoints = {
-      {-half, -half, 0.0f},
-      {half, -half, 0.0f},
+      {-half, half, 0.0f},
       {half, half, 0.0f},
-      {-half, half, 0.0f}
+      {half, -half, 0.0f},
+      {-half, -half, 0.0f}
   };
 
   const std::vector<cv::Point2f> imagePoints(
@@ -111,7 +111,7 @@ auto MarkerPoseEstimator::estimate_pose_calibrated(
 
   const bool success = cv::solvePnP(
       objectPoints, imagePoints, m_cameraMatrix, m_distCoeffs, rvec, tvec,
-      false, cv::SOLVEPNP_ITERATIVE
+      false, cv::SOLVEPNP_IPPE_SQUARE
   );
 
   if (!success) {
