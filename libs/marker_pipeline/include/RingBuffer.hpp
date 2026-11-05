@@ -1,19 +1,12 @@
 #pragma once
 #include <array>
+#include <atomic>
 #include <cstddef>
-#include <mutex>
 #include <optional>
-#include <semaphore>
-#include <type_traits>
-
-#include "Utilities.hpp"
+#include <utility>
 
 namespace late {
 enum class OverflowPolicy { DROP, OVERWRITE };
-
-template <OverflowPolicy policy, size_t size>
-using conditional_semaphore = std::conditional_t<
-    policy == OverflowPolicy::DROP, std::counting_semaphore<size>, Empty>;
 
 template <typename T>
 class IBuffer {
@@ -25,6 +18,10 @@ class IBuffer {
 
 template <typename T, size_t size, OverflowPolicy policy>
 class RingBuffer : public IBuffer<T> {
+  static_assert(
+      (size & (size - 1)) == 0 && size > 0, "size must be a power of 2"
+  );
+
  public:
   RingBuffer()                                                      = default;
   RingBuffer(const RingBuffer<T, size, policy>& buffer)             = delete;
@@ -37,53 +34,39 @@ class RingBuffer : public IBuffer<T> {
   auto read() -> std::optional<T>;
 
  private:
-  static auto make_conditional_semaphore()
-      -> conditional_semaphore<policy, size> {
-    if constexpr (policy != OverflowPolicy::OVERWRITE)
-      return std::counting_semaphore<size>(size);
-    else
-      return Empty{};
-  }
-
- private:
+  using size_atomic = std::atomic<std::size_t>;
   std::array<T, size> m_buffer{};
-  size_t m_readerHead = 0;
-  size_t m_writerHead = 0;
-  std::mutex m_mutex{};
-  std::counting_semaphore<size> m_filled{0};
-  [[no_unique_address]] conditional_semaphore<policy, size> m_empty =
-      make_conditional_semaphore();
+  std::atomic<std::size_t> m_idxRead{0};
+  std::atomic<std::size_t> m_idxWrite{0};
 };
 
 template <typename T, size_t size, OverflowPolicy policy>
 auto RingBuffer<T, size, policy>::write(T&& data) -> void {
+  const std::size_t w = m_idxWrite.load(std::memory_order_relaxed);
+
   if constexpr (policy == OverflowPolicy::DROP) {
-    if (!m_empty.try_acquire()) return;
+    const std::size_t r = m_idxRead.load(std::memory_order_acquire);
+    if ((w - r) == size) return;
   }
 
-  {
-    std::lock_guard lock{m_mutex};
-    m_buffer[m_writerHead] = std::move(data);
-    m_writerHead           = (m_writerHead + 1) % m_buffer.max_size();
-  }
-
-  m_filled.release();
+  m_buffer[w & (size - 1)] = std::move(data);
+  m_idxWrite.store(w + 1, std::memory_order_release);
 };
 
 template <typename T, size_t size, OverflowPolicy policy>
 auto RingBuffer<T, size, policy>::read() -> std::optional<T> {
-  if (!m_filled.try_acquire()) return std::nullopt;
+  std::size_t r       = m_idxRead.load(std::memory_order_relaxed);
+  const std::size_t w = m_idxWrite.load(std::memory_order_acquire);
 
-  std::optional<T> data;
-  {
-    std::lock_guard lock{m_mutex};
-    data         = std::move(m_buffer[m_readerHead]);
-    m_readerHead = (m_readerHead + 1) % m_buffer.max_size();
+  if (w == r) return std::nullopt;
+  if constexpr (policy == OverflowPolicy::OVERWRITE) {
+    if (w - r > size) {
+      r = w - size;
+      m_idxRead.store(r, std::memory_order_relaxed);
+    }
   }
-
-  if constexpr (policy == OverflowPolicy::DROP) {
-    m_empty.release();
-  }
+  std::optional<T> data = std::move(m_buffer[r & (size - 1)]);
+  m_idxRead.store(r + 1, std::memory_order_release);
   return data;
 };
 }  // namespace late
