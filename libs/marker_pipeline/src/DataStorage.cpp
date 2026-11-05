@@ -9,16 +9,28 @@ DataStorage::DataStorage(float maxFrameMovement)
     : m_maxFrameMovement(maxFrameMovement) {}
 
 auto DataStorage::Insert(Marker& marker) -> void {
+  // std::cout << "Inserting marker with id: " << marker.m_markerTypeId << std::endl;
+  if (m_markerVector.size() <= marker.m_markerTypeId) {
+    m_markerVector.resize(marker.m_markerTypeId + 1);
+  }
   marker.m_instanceId = GetInstanceId(marker);
-  m_storedMarkers.insert_or_assign(marker.m_instanceId, marker);
+
+  m_markerVector[marker.m_markerTypeId].push_back(marker);
+  // m_storedMarkers.insert_or_assign(marker.m_instanceId, marker);
 };
 
 auto DataStorage::GetAllMarkers() -> std::vector<Marker> {
-  // std::print("Returning markers\n");
+  // std::cout << "Returning markers\n";
   std::vector<Marker> markers;
 
-  for (const auto& pair : m_storedMarkers) {
-    markers.push_back(pair.second);
+  // for (const auto& pair : m_storedMarkers) {
+  //   markers.push_back(pair.second);
+  // }
+
+  for (const auto& typeVector : m_markerVector) {
+    for (const auto& marker : typeVector) {
+      markers.push_back(marker);
+    }
   }
 
   return markers;
@@ -62,7 +74,8 @@ auto DataStorage::GetInstanceId(const Marker& marker) -> uint64_t {
 };
 auto DataStorage::process(FinalPayload&& payload) -> std::vector<Marker> {
   m_storedMarkers.clear();
-  
+  m_markerVector.clear();
+  std::cout << "cleared storage" << std::endl;
   for (auto& marker : payload.m_markers) {
     Insert(marker);
   }

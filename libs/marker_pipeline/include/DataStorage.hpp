@@ -17,6 +17,7 @@ class DataStorage : public pipeline::IStage<FinalPayload, std::vector<Marker>> {
 
  private:
   auto GetInstanceId(const Marker& marker) -> uint64_t;
+  std::vector<std::vector<Marker>> m_markerVector;
   std::unordered_map<std::uint64_t, Marker> m_storedMarkers;
   std::uint64_t m_nextInstanceId = 1;  // Start at 1 to avoid removing 0 if
                                        // remove marker hasn't been assign yet
