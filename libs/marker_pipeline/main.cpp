@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
           .attach<ImageRenderer>(115)
           .attach<MarkerDetection>(0.025, 0.25)
           .attach<MarkerRectification>()
-          .attach<MarkerRecognition>(0.7, calibration_path)
+          .attach<MarkerRecognition>(0.7, calibration_path.string())
           .attach<DataStorage>(100.0f)
           .on_input<ImageRenderer>([&keyPressed,
                                     &windowTitle](const cv::Mat& frame) {
