@@ -22,6 +22,7 @@ int main(int argc, char* argv[]) {
   using late::CameraCapture;
   using late::CandidateMarker;
   using late::DataStorage;
+  using late::DataConversion;
   using late::ImageRenderer;
   using late::Marker;
   using late::MarkerDetection;
@@ -57,6 +58,7 @@ int main(int argc, char* argv[]) {
           .attach<MarkerRectification>()
           .attach<MarkerRecognition>(0.7, calibration_path.string())
           .attach<DataStorage>(100.0f)
+          .attach<DataConversion>()
           .on_input<ImageRenderer>([&keyPressed,
                                     &windowTitle](const cv::Mat& frame) {
             if (keyPressed == '1') cv::imshow(windowTitle, frame);
