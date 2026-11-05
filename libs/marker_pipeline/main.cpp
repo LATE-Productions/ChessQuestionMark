@@ -9,21 +9,22 @@
 #include <vector>
 
 #include "CameraCapture.hpp"
+#include "DataConversion.hpp"
 #include "DataStorage.hpp"
 #include "ImageRenderer.hpp"
 #include "Marker.hpp"
 #include "MarkerDetection.hpp"
 #include "MarkerRecognition.hpp"
 #include "MarkerRectification.hpp"
-#include "DataConversion.hpp"
 #include "RingBuffer.hpp"
 #include "pipeline/Components.hpp"
 
 int main(int argc, char* argv[]) {
   using late::CameraCapture;
   using late::CandidateMarker;
-  using late::DataStorage;
   using late::DataConversion;
+  using late::DataStorage;
+  using late::GodotMarker;
   using late::ImageRenderer;
   using late::Marker;
   using late::MarkerDetection;
@@ -124,8 +125,7 @@ int main(int argc, char* argv[]) {
               auto valid_markers = data.m_markers;
 
               for (int i = 0; i < valid_markers.size(); i++) {
-                std::string rectWinName =
-                    std::format("index: {}", i);
+                std::string rectWinName = std::format("index: {}", i);
                 cv::imshow(
                     rectWinName, valid_markers[i].m_markerImage
                 );  // Use for debug
@@ -145,7 +145,7 @@ int main(int argc, char* argv[]) {
     std::optional<cv::Mat> frame = buffer->read();
     if (frame) {
       pipeline << std::move(*frame);
-      std::optional<std::vector<Marker>> output;
+      std::optional<std::vector<GodotMarker>> output;
       pipeline >> output;
       if (output) {
         if (output->size() > 0)
