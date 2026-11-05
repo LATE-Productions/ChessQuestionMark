@@ -15,6 +15,7 @@
 #include "MarkerDetection.hpp"
 #include "MarkerRecognition.hpp"
 #include "MarkerRectification.hpp"
+#include "DataConversion.hpp"
 #include "RingBuffer.hpp"
 #include "pipeline/Components.hpp"
 
