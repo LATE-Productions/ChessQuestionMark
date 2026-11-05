@@ -199,8 +199,8 @@ auto MarkerRecognition::CorrectCornerOrder(
     corrected[i] = corners[(i + shift) % 4];
   }
 
-  std::cout << "bestRotation: " << bestRotation << '\n';
-  std::cout << "shift: " << shift << '\n';
+  //std::cout << "bestRotation: " << bestRotation << '\n';
+  //std::cout << "shift: " << shift << '\n';
 
   return corrected;
 };
