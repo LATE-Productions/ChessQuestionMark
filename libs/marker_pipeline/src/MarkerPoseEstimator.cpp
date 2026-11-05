@@ -1,12 +1,15 @@
 #include "MarkerPoseEstimator.hpp"
 
 #include <cmath>
+#include <filesystem>
 #include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
 
 namespace late {
 
 MarkerPoseEstimator::MarkerPoseEstimator(const std::string& filePath) {
+  std::cout << "Current path is " << std::filesystem::current_path()
+            << '\n';  // (1)
   bool isLoaded = load_calibration(filePath);
   assert(isLoaded);
 };
@@ -22,22 +25,20 @@ auto MarkerPoseEstimator::load_calibration(const std::string& fileName)
   fs["camera_matrix"] >> m_cameraMatrix;
   fs["distortion_coefficients"] >> m_distCoeffs;
 
-  
   fs.release();
-  
-  if (m_cameraMatrix.empty() || m_distCoeffs.empty()){
+
+  if (m_cameraMatrix.empty() || m_distCoeffs.empty()) {
     return false;
   }
 
-
   const double scaleX = 1920.0 / 1600.0;
   const double scaleY = 1080.0 / 900.0;
-  
-  m_cameraMatrix.at<double>(0, 0) *= scaleX; // fx
-  m_cameraMatrix.at<double>(0, 2) *= scaleX; // cx
-  
-  m_cameraMatrix.at<double>(1, 1) *= scaleY; // fy
-  m_cameraMatrix.at<double>(1, 2) *= scaleY; // cy
+
+  m_cameraMatrix.at<double>(0, 0) *= scaleX;  // fx
+  m_cameraMatrix.at<double>(0, 2) *= scaleX;  // cx
+
+  m_cameraMatrix.at<double>(1, 1) *= scaleY;  // fy
+  m_cameraMatrix.at<double>(1, 2) *= scaleY;  // cy
 
   return true;
 };

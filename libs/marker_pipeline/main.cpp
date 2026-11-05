@@ -1,3 +1,4 @@
+#include <filesystem>
 #include <format>
 #include <memory>
 #include <opencv2/core/mat.hpp>
@@ -17,7 +18,7 @@
 #include "RingBuffer.hpp"
 #include "pipeline/Components.hpp"
 
-int main() {
+int main(int argc, char* argv[]) {
   using late::CameraCapture;
   using late::CandidateMarker;
   using late::DataStorage;
@@ -33,9 +34,18 @@ int main() {
   cv::Mat shared_frame;
 
   auto buffer =
-      std::make_shared<RingBuffer<cv::Mat, 3, OverflowPolicy::DROP>>();
+      std::make_shared<RingBuffer<cv::Mat, 4, OverflowPolicy::DROP>>();
   cameraCapture.attach_output(buffer);
   std::string windowTitle = "Pipeline";
+
+  std::filesystem::path calibration_path;
+  try {
+    auto root_path   = std::filesystem::canonical(argv[0]).parent_path();
+    calibration_path = root_path / "camera_calibration.yaml";
+  } catch (const std::filesystem::filesystem_error& e) {
+    std::cerr << "path error: " << e.what() << '\n';
+    return 1;
+  }
 
   int keyPressed = '1';
   std::vector<std::string> last_open_windows{};
@@ -45,7 +55,7 @@ int main() {
           .attach<ImageRenderer>(115)
           .attach<MarkerDetection>(0.025, 0.25)
           .attach<MarkerRectification>()
-          .attach<MarkerRecognition>(0.7, "camera_calibration.yaml")
+          .attach<MarkerRecognition>(0.7, calibration_path.string())
           .attach<DataStorage>(100.0f)
           .on_input<ImageRenderer>([&keyPressed,
                                     &windowTitle](const cv::Mat& frame) {
