@@ -25,16 +25,55 @@ To play the game, users will move/rotate markers that augment chess pieces withi
     - OpenCV (latest)
 - CMake minimum version (3.20)
 
-## Building and Debuging
+## Building and Debugging
 To build the GDExtension for use in the Godot editor run:
+
+After cloning repository on clean computer:
+```bash
+git submodule update --init --recursive
+```
+
+For linux debug setup:
+```bash
+cmake -S . --preset default -G Ninja Multi-Config
+```
+
+For windows debug setup:
+```bash
+cmake -S . -B -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DGODOTCPP_DEBUG_CRT=ON
+```
+
+For general debug build:
 ```bash
 cmake --build build --config Debug
 ```
+
 To build the project in the Godot Engine editor, you must also provide an optimised binary first.
 Before building in the editor run 
 ```bash
 cmake --build build --config Release -DGODOTCPP_TARGET=template_release
 ```
+Noted, we have never made it for release build. This we did not have time with properly!
+
+To run different files:
+
+Pipeline debug:
+```bash
+build/bin/Debug/marker_pipeline.exe
+```
+
+Camera calibration:
+```bash
+build/bin/Debug/camera_calibration.exe
+```
+
+Tests:
+```bash
+build/bin/Debug/tests.exe
+```
+
+For godot you just click play in editor.
+
 This template omits debug code and macros used by the editor to allow us to edit our scenes and the release config omits debug symbols used by our code editors to debug the GDExtension
 
 - -DGODOTCPP_TARGET

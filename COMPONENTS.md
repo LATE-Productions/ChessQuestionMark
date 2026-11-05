@@ -4,8 +4,7 @@
 |--------------|--------------|----------|
 | N/A | libs/marker_pipeline/main.cpp | Theo.J / Lukas.K |
 | pipeline/Components.hpp | N/A | Theo.J |
-| pipeline/Concepts.hpp | N/A | Theo.J |
-| Utilities.hpp | N/A | Theo.J |
+| pipeline/Concepts.hpp | N/A | Theo.J |-
 | RingBuffer.hpp | N/A | Theo.J |
 | CameraCapture.hpp | CameraCapture.cpp  | Theo.J |
 | CameraCalibration.hpp | CameraCalibration.cpp | Anton.B / Lukas.K |
