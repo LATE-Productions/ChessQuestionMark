@@ -5,12 +5,12 @@
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/variant/callable.hpp>
 #include <godot_cpp/variant/dictionary.hpp>
-#include <godot_cpp/variant/vector3.hpp>
 #include <godot_cpp/variant/quaternion.hpp>
+#include <godot_cpp/variant/vector3.hpp>
 #include <map>
-#include <unordered_map>
 #include <memory>
 #include <thread>
+#include <unordered_map>
 
 #include "RingBuffer.hpp"
 #include "objects/MarkerContainer.hpp"
@@ -18,7 +18,8 @@
 
 namespace chess {
 using late::OverflowPolicy;
-using PiplineSourceBuffer = late::RingBuffer<cv::Mat, 4, OverflowPolicy::DROP>;
+using PiplineSourceBuffer =
+    late::RingBuffer<cv::Mat, 4, OverflowPolicy::OVERWRITE>;
 
 class MarkerManager : public godot::Node3D {
   GDCLASS(MarkerManager, godot::Node3D)
@@ -28,8 +29,9 @@ class MarkerManager : public godot::Node3D {
   auto _exit_tree() -> void override;
   auto _process(double delta) -> void override;
   auto create_marker(int markerId) -> godot::Node3D*;
-  auto update_marker(int id, godot::Vector3 position, godot::Quaternion rotation)
-      -> void;
+  auto update_marker(
+      int id, godot::Vector3 position, godot::Quaternion rotation
+  ) -> void;
 
   auto get_scale2d() const -> double;
   auto set_scale2d(double scale) -> void;
@@ -59,8 +61,8 @@ class MarkerManager : public godot::Node3D {
 
   double m_depth;
   double m_scale2d;
-  double m_spring = 0.1f;
-  double m_elapsedTime = 0.0;
+  double m_spring        = 0.1f;
+  double m_elapsedTime   = 0.0;
   double m_markerTimeout = 1.0;
 };
 }  // Namespace chess
