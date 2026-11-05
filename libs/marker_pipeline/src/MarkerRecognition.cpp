@@ -31,10 +31,12 @@ MarkerRecognition::MarkerRecognition(
                                                   1, 0, 0, 0, 1, 0, 
                                                   0, 1, 0, 0, 0, 1}});
 
-  m_storedMarkers.insert({2, std::array<bool, 36>{0, 0, 0, 1, 0, 1, 0, 1, 1,
-                                                  0, 0, 1, 0, 0, 0, 0, 0, 1,
-                                                  1, 1, 1, 1, 1, 0, 1, 0, 1,
-                                                  0, 1, 1, 0, 0, 1, 1, 0, 1}});
+  m_storedMarkers.insert({2, std::array<bool, 36>{0, 0, 0, 1, 0, 1, 
+                                                  0, 1, 1, 0, 0, 1, 
+                                                  0, 0, 0, 0, 0, 1,
+                                                  1, 1, 1, 1, 1, 0, 
+                                                  1, 0, 1, 0, 1, 1, 
+                                                  0, 0, 1, 1, 0, 1}});
   
   m_storedMarkers.insert({3, std::array<bool, 36>{1, 1, 1, 0, 0, 1, 
                                                   0, 0, 0, 1, 1, 1, 

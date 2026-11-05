@@ -112,7 +112,7 @@ int main() {
 
               for (int i = 0; i < valid_markers.size(); i++) {
                 std::string rectWinName =
-                    std::format("id: {}", valid_markers[i].m_markerTypeId);
+                    std::format("index: {}", i);
                 cv::imshow(
                     rectWinName, valid_markers[i].m_markerImage
                 );  // Use for debug
